@@ -1,1 +1,30 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/primeng.css";
+@import "primeng/resources/themes/aura-light-blue/theme.css";
+@import "primeicons/primeicons.css";
+
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+@import "chessboardjs/www/css/chessboard.css";
+
+body {
+    width: 99%;
+    height: 99%;
+}
+
+/* MenuBar Stuff */
+
+.p-menubar {
+    padding: 2px !important;
+    background-image: linear-gradient(orange, #f7efd6);
+    border:1px solid black;
+}
+
+.p-menuitem-text {
+    font-size: small;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.p-dialog-header {
+    height: 38px;
+    background-image: linear-gradient(#dfb5f7, #a300ee);
+}

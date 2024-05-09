@@ -35,7 +35,7 @@ public class FxApp extends Application
 		primaryStage.setTitle("Chesster");
 
 		Browser b = new Browser();
-		Scene scene = new Scene(b, 880, 660, Color.web("#666970"));
+		Scene scene = new Scene(b, 1400, 900, Color.web("#666970"));
 
 		b.webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
 			if (Worker.State.SUCCEEDED == newValue) {

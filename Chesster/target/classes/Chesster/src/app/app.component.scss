@@ -1,0 +1,48 @@
+
+.app {
+    display: grid;
+    border: 0px solid black;
+}
+
+.toprow {
+    display: flex;
+    width: auto;
+}
+
+.toprow img {
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.bottomrow {
+    display: flex;
+}
+
+p-menubar {
+    width: 97%;
+    height: 38px;
+}
+
+img {
+    width: 38px;
+    height: 38px;
+    padding: 4px;
+    background-color: orange;
+}
+
+.mpanel {
+    display: block;
+    width: 97%;
+    height: calc(100vh - 64px);
+    padding: 5px;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.about {
+    position: absolute;
+    top: 38px;
+    left: 38px;
+    width: 95%;
+    height: 90%;
+}
