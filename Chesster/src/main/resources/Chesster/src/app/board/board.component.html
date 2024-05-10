@@ -1,5 +1,7 @@
 <div class="">
+    <playerbox [player]="playertop" [align]="'bottom'"></playerbox>
     <ng2-chessboard #board [(position)]="position" [draggable]="true"></ng2-chessboard>
+    <playerbox [player]="playerbottom" [align]="'top'"></playerbox>
 </div>
 <div class="">
     <p-button label="Move" severity="primary" [rounded]="true" (click)="move()"></p-button>
