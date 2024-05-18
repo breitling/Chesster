@@ -1,8 +1,21 @@
-<div class="">
-    <playerbox [player]="playertop" [align]="'bottom'"></playerbox>
-    <ng2-chessboard #board [(position)]="position" [draggable]="true"></ng2-chessboard>
-    <playerbox [player]="playerbottom" [align]="'top'"></playerbox>
-</div>
-<div class="">
-    <p-button label="Move" severity="primary" [rounded]="true" (click)="move()"></p-button>
+<div class="main flex flex-row">
+    <div class="box">
+        <div class="flex flex-row">
+            <div class="boardbox flex flex-column">
+                <playerbox [player]="playertop" [align]="'bottom'"></playerbox>
+                <ng2-chessboard #board [(position)]="position" [draggable]="true" (positionChange)="handlePositionChange($event)"></ng2-chessboard>
+                <playerbox class="mt-1" [player]="playerbottom" [align]="'top'"></playerbox>
+            </div>
+            <div class="turnbox">
+                <div class="blackturn" [style]="{'vertical-align': blackalign, 'visibility':  turn === 1 ? 'visible' : 'hidden'}"></div>
+                <div class="evalbar"></div>
+                <div class="whiteturn" [style]="{'vertical-align': whitealign, 'visibility':  turn === 0 ? 'visible' : 'hidden'}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="databox flex border-1 border-round-lg m-1">
+        <div class="toolbox">
+            <p-button label="Restart Game" severity="primary" [rounded]="true" (click)="restart()"></p-button>
+        </div>
+    </div>
 </div>

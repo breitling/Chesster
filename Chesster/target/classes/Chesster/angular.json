@@ -34,7 +34,8 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/chessboardjs/www/releases/1.0.0/js/chessboard-1.0.0.min.js"
+              "node_modules/chessboardjs/www/releases/1.0.0/js/chessboard-1.0.0.min.js",
+              "node_modules/chess.js/dist/cjs/chess.js"
             ]
           },
           "configurations": {
@@ -97,7 +98,8 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/chessboardjs/www/releases/1.0.0/js/chessboard-1.0.0.min.js"
+              "node_modules/chessboardjs/www/releases/1.0.0/js/chessboard-1.0.0.min.js",
+              "node_modules/chess.js/dist/cjs/chess.js"
             ]
           }
         }

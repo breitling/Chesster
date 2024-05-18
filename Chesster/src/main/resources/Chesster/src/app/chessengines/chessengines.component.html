@@ -1,1 +1,27 @@
-<p>chessengines works!</p>
+<div class="main flex flex-row">
+    <div class="box m-1">
+        <div class="block m-2">
+            <h3>Your Chess Engines:</h3>
+        </div>
+        <div class="block m-2">
+            <p-dataView #dv [value]="engines" layout="grid">
+                <ng-template let-engine pTemplate="grid" let-engines>
+                    <div class="flex flex-wrap" style="max-width: 100%;">
+                        <div class="flex" *ngFor="let e of engines">
+                            <div class="enginebox">
+                                <i class="fa-solid fa-microchip" style="color: black; font-size: 1.0rem; padding: 2px;"></i>  {{e.name}} <br>
+                                <b>Elo:</b> {{e.elo}} <b>Version:</b> {{e.version}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex newbox">
+                        <p-button label="Add New Engine" [text]="true" severity="primary" (click)="addEngine()"/>
+                    </div>
+                </ng-template>
+            </p-dataView>
+        </div>
+    </div>
+    <div class="databox flex border-1 border-round-lg align-items-center justify-content-center m-1">
+        Select Engine.
+    </div>
+</div>

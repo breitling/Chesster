@@ -1,6 +1,8 @@
 <div class="box">
     <p-avatar image="/assets/defaultplayer.png" size="large" shape="square"/> &nbsp;
-    <span [style]="{'vertical-align': align}">
-        <b>{{player.name}}</b> &nbsp; ({{player.rating}}) &nbsp; <img src="/assets/flags/{{player.country}}.png" alt="{{player.country}}">
+    <span [style]="{'vertical-align': align }">
+        <b>{{player.name}}</b> &nbsp; 
+        ({{player.rating}}) &nbsp; 
+        <img src="/assets/flags/{{player.country}}.png" alt="{{player.country}}" [style]="{'vertical-align': align }" >
     </span>
 </div>

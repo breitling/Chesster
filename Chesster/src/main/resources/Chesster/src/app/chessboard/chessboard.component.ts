@@ -3,6 +3,8 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 declare var $: any;
 declare var ChessBoard: any;
 
+import { Chess } from 'chess.js';
+
 @Component({
     selector: 'ng2-chessboard',
     standalone: true,
@@ -13,6 +15,7 @@ declare var ChessBoard: any;
 export class ChessboardComponent {
 
     board: any;
+    game: Chess;
 
     private _position:      any     = 'start';
     private _orientation:   Boolean = true;
@@ -28,7 +31,9 @@ export class ChessboardComponent {
     @Input() animation: Boolean = true;
     @Output() animationChange: EventEmitter<Boolean> = new EventEmitter<Boolean>();
 
-    constructor() {}
+    constructor() {
+        this.game = new Chess();
+    }
 
     ngOnInit() {
         this.load();
@@ -143,7 +148,12 @@ export class ChessboardComponent {
     }
 
     public fen() {
-        return this.board.fen();
+        return this.game.fen();
+    }
+
+    public reset() {
+        this.game.reset();
+        this.position = 'start'; // this.game.fen();
     }
 
   // EVENTS
@@ -160,27 +170,48 @@ export class ChessboardComponent {
     }
 
     private onDragStart(source: string, piece: string, position: any, orientation: string) {
-        this.dragStart.emit({source, piece, position, orientation});
+        if (this.game.isGameOver() ||
+           (this.game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+           (this.game.turn() === 'b' && piece.search(/^w/) !== -1))
+        {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private onDragMove(newLocation: any, oldLocation: any, source: string, piece: string, position: any, orientation: string) {
-        this.dragMove.emit({newLocation, oldLocation, source, piece, position, orientation});
     }
 
     private onDrop(source: string, target: string, piece: string, newPos: any, oldPos: any, orientation: string) {
+        let move = null;
+        
+        try {
+            move = this.game.move({from: source, to: target, promotion: 'q'});
+        } catch(e) {
+            move = null;
+        }
+        
+        if (move === null) {
+            return 'snapback';
+        }
+
         this._position = newPos;
-        this.positionChange.emit(this._position);
-        this.drop.emit({source, target, piece, newPos, oldPos, orientation});
+        this.positionChange.emit(this.game.fen());
+
+        return '';
     }
 
     private onSnapbackEnd(piece: string, square: string, position: any, orientation: string) {
-        this.snapbackEnd.emit({piece, square, position, orientation});
     }
 
     private onMoveEnd(oldPos: any, newPos: any) {
         this._position = newPos;
-        this.positionChange.emit(this._position);
-        this.moveEnd.emit({oldPos, newPos});
+    //  this.positionChange.emit(this.game.fen());
+    }
+
+    private onSnapEnd(source: string, target: string, piece: string) {
+        this.board.position(this.game.fen())
     }
 
     private load() {
@@ -201,7 +232,8 @@ export class ChessboardComponent {
           'onDragMove': this.onDragMove.bind(this),
           'onDrop': this.onDrop.bind(this),
           'onSnapbackEnd': this.onSnapbackEnd.bind(this),
-          'onMoveEnd': this.onMoveEnd.bind(this)
+          'onMoveEnd': this.onMoveEnd.bind(this),
+          'onSnapEnd' : this.onSnapEnd.bind(this)
         });
     }
 }

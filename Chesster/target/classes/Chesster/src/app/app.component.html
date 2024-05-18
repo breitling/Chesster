@@ -3,12 +3,6 @@
         <img src="/assets/king.png" width="46" height="46"/>
         <p-menubar [model]="items"/>
     </div>
-    <div class="bottomrow">
-        <app-sidebar></app-sidebar>
-        <div class="mpanel">
-            <router-outlet/>
-        </div>
-    </div>
     <div class="about">
         <p-dialog [modal]="true" [(visible)]="visible" header="About Chesster..." [style]="{ width: '35rem' }">
             <div class="flex mb-2">
@@ -21,5 +15,11 @@
                 <p-button label="Close" severity="help" [rounded]="true" (click)="visible = false"></p-button>
             </div>
         </p-dialog>
+    </div>
+    <div class="bottomrow">
+        <app-sidebar></app-sidebar>
+        <div class="mpanel">
+            <router-outlet/>
+        </div>
     </div>
 </div>
