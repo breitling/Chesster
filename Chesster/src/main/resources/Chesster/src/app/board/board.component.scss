@@ -26,6 +26,18 @@
     background-color: rgb(226, 248, 255);
 }
 
+.movebox {
+    width: 180px;
+    height: 859px;
+    margin-top: 52px;
+    margin-left: 6px;
+}
+
+.enginebox {
+    width: 532px;
+    height: 304px;
+}
+
 .blackturn {
     width: 20px;
     height: 20px;
@@ -52,7 +64,7 @@
 
 .toolbox {
     width: auto;
-    padding: 20px;
+    padding: 0px 2px 36px 8px;
 }
 
 p-button {

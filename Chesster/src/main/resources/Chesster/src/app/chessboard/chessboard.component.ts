@@ -50,6 +50,7 @@ export class ChessboardComponent {
     set position(value: any) {
         this._position = value;
         if (this.board) this.board.position(value, this.animation);
+    //  console.log(value);
     }
 
     @Input()
@@ -126,6 +127,7 @@ export class ChessboardComponent {
     get snapSpeed():     any     { return this._snapSpeed;     }
     get sparePieces():   Boolean { return this._sparePieces;   }
 
+    @Output() lastMove:            EventEmitter<string>  = new EventEmitter<string>();
     @Output() positionChange:      EventEmitter<any>     = new EventEmitter<any>();
     @Output() orientationChange:   EventEmitter<Boolean> = new EventEmitter<Boolean>();
     @Output() showNotationChange:  EventEmitter<Boolean> = new EventEmitter<Boolean>();
@@ -154,6 +156,11 @@ export class ChessboardComponent {
     public reset() {
         this.game.reset();
         this.position = 'start'; // this.game.fen();
+    }
+
+    public undo() {
+        this.game.undo();
+        this.position = this.game.fen();
     }
 
   // EVENTS
@@ -196,6 +203,9 @@ export class ChessboardComponent {
             return 'snapback';
         }
 
+        const moves = this.game.history();
+        this.lastMove.emit(moves[moves.length-1]);
+
         this._position = newPos;
         this.positionChange.emit(this.game.fen());
 
@@ -207,11 +217,10 @@ export class ChessboardComponent {
 
     private onMoveEnd(oldPos: any, newPos: any) {
         this._position = newPos;
-    //  this.positionChange.emit(this.game.fen());
     }
 
     private onSnapEnd(source: string, target: string, piece: string) {
-        this.board.position(this.game.fen())
+        this.board.position(this.game.fen());
     }
 
     private load() {
