@@ -1,4 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ButtonModule } from 'primeng/button';
+
+import { PromotionBox } from './promotionbox';
+import { DataService } from '../Services/DataService.service';
 
 declare var $: any;
 declare var ChessBoard: any;
@@ -8,14 +15,17 @@ import { Chess } from 'chess.js';
 @Component({
     selector: 'ng2-chessboard',
     standalone: true,
-    imports: [],
+    imports: [CommonModule,ButtonModule],
     templateUrl: './chessboard.component.html',
-    styleUrl: './chessboard.component.scss'
+    styleUrl: './chessboard.component.scss',
+    providers: [DialogService,DynamicDialogRef]
 })
 export class ChessboardComponent {
 
     board: any;
     game: Chess;
+
+    ref: DynamicDialogRef | undefined;
 
     private _position:      any     = 'start';
     private _orientation:   Boolean = true;
@@ -31,7 +41,7 @@ export class ChessboardComponent {
     @Input() animation: Boolean = true;
     @Output() animationChange: EventEmitter<Boolean> = new EventEmitter<Boolean>();
 
-    constructor() {
+    constructor(private dataService : DataService, public dialogService: DialogService) {
         this.game = new Chess();
     }
 
@@ -191,14 +201,36 @@ export class ChessboardComponent {
     }
 
     private onDrop(source: string, target: string, piece: string, newPos: any, oldPos: any, orientation: string) {
+        if ((piece === 'wP' && target.endsWith('8')) || (piece === 'bP' && target.endsWith('1'))) {
+            this.ref = this.dialogService.open(PromotionBox, { 
+                data: { turn: piece.charAt(0) }, 
+                showHeader: false, 
+                width: '66px',
+                height: '230px',
+                styleClass: 'flex justify-content-center border-rounded-lg',
+                focusOnShow: false,
+                style: { position: 'absolute', top: '240px', left: '270px', padding: '4px' }
+            });
+
+            this.ref.onClose.subscribe((piece : string) => {
+                this.doMove(source, target, piece, newPos);
+            });
+
+            return 'trash';
+        } else {
+            return this.doMove(source, target, 'q', newPos);
+        }
+    }
+
+    private doMove(source : string, target : string, promotion : string, newPos : any ) {
         let move = null;
         
         try {
-            move = this.game.move({from: source, to: target, promotion: 'q'});
+            move = this.game.move({from: source, to: target, promotion: promotion });
         } catch(e) {
             move = null;
         }
-        
+
         if (move === null) {
             return 'snapback';
         }

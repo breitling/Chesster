@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { ChessEngine } from "../Models/chessengine";
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class DataService {
 
     private javaConnector: Function;
@@ -10,7 +12,7 @@ export class DataService {
         this.javaConnector = () => { return 'TBI'; };
     }
 
-//  COMMANDS\
+//  COMMANDS
 
     public getEngines() {
         return Promise.resolve(this.engines());
