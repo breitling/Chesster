@@ -213,7 +213,8 @@ export class ChessboardComponent {
             });
 
             this.ref.onClose.subscribe((piece : string) => {
-                this.doMove(source, target, piece, newPos);
+                const r = this.doMove(source, target, piece, newPos);
+                // WHAT IF R IS NULL? BAD DROP.
             });
 
             return 'trash';
