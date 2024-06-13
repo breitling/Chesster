@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 
-import { Player } from '../Models/player';
+import { Player } from '../Models/Player';
 
 @Component({
   selector: 'playerbox',

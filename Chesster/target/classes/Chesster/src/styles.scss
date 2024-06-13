@@ -1,5 +1,6 @@
 @import "primeng/resources/primeng.css";
 @import "primeng/resources/themes/aura-light-blue/theme.css";
+@import "primeflex/primeflex.css";
 @import "primeicons/primeicons.css";
 
 @import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -33,4 +34,41 @@ body {
 
 .p-avatar.p-avatar-image {
     background-color: rgb(216, 235, 241);
+}
+
+/* Dataviews */ 
+
+.p-dataview {
+    margin-top: 10px;
+}
+
+/* Chess notation table */
+
+#notation .p-datatable-thead > tr > th {
+    color: #21610B;
+    border: 0px solid white;
+    padding: 2px;
+    font-size: small;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#notation .p-datatable-tbody > tr > td {
+    border: 0px solid white;
+    padding: 2px;
+    font-size: 0.9rem;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+}
+
+#notation .p-datatable-thead tr:first-child > th:nth-child(1) { width:  30px; }
+#notation .p-datatable-tbody tr:first-child > td:nth-child(1) { color: #21610B; }
+
+/* Promotion Box */
+
+.p-dialog .p-dialog-content {
+    padding: 2px;
+}
+
+#promotion .p-button { 
+    padding: 2px;
 }

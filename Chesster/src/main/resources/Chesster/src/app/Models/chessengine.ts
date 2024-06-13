@@ -11,7 +11,7 @@ export interface EngineParams {
 export interface ChessEngine {
     name: string;
     version: string;
-    path?: string;
+    path: string;
     image?: string;
     elo: number;
     loaded: boolean;

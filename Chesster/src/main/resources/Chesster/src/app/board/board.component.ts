@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from "@angular/flex-layout";
 
@@ -9,15 +9,19 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ChessboardComponent } from '../chessboard/chessboard.component';
 import { PlayerBoxComponent } from '../playerbox/playerbox.component';
 
-import { Player } from '../Models/player';
+import { Player } from '../Models/Player';
 import { ChessNotationTurn, Sides } from '../Models/ChessNotationTurn';
+import { DataService } from '../Services/DataService.service';
+import { Move } from '../Models/Move';
+
+import { Chess } from 'chess.js';
 
 @Component({
-  selector: 'app-board',
-  standalone: true,
-  imports: [CommonModule,FlexLayoutModule,ChessboardComponent,ButtonModule,PlayerBoxComponent,TableModule,TooltipModule],
-  templateUrl: './board.component.html',
-  styleUrl: './board.component.scss'
+    selector: 'app-board',
+    standalone: true,
+    imports: [CommonModule,FlexLayoutModule,ChessboardComponent,ButtonModule,PlayerBoxComponent,TableModule,TooltipModule],
+    templateUrl: './board.component.html',
+    styleUrl: './board.component.scss'
 })
 export class BoardComponent implements OnInit, OnDestroy {
     public position : string = 'start'; //'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 1 0';
@@ -26,24 +30,31 @@ export class BoardComponent implements OnInit, OnDestroy {
     halfTurns : number = 0;
     whoseTurn : number = Sides.WHITE;
     orientation : boolean = true;
+    showEvalBar : boolean = false;
 
     playertop : Player;
     playerbottom : Player;
 
     @ViewChild("board") board : any;
+    @ViewChild("analysisarea") analysisarea : ElementRef | undefined;
 
-    whitealign : string = 'bottom';
-    blackalign : string = 'top';
+    bottomcolor : string = 'white';
+    topcolor : string = 'black';
 
     moves : ChessNotationTurn [] = [];
+
+    enginescore : number;
+    enginemoves : string | undefined;
 
     tooltipOptions = {
         tooltipZIndex: "10px",
     }
 
-    constructor() {
+    constructor(private dataService : DataService) {
         this.playertop = { name: 'Player', rating: 1500, country: 'France'};
         this.playerbottom = { name: 'Hero', rating: 1500, country: 'USA'};
+        this.enginemoves = undefined;
+        this.enginescore = 0;
     }
 
     ngOnInit() {
@@ -108,21 +119,35 @@ export class BoardComponent implements OnInit, OnDestroy {
         }
     }
 
+    public isTopTurn() : boolean {
+        if (this.topcolor == 'white')
+            return this.whoseTurn == 0;
+        else
+            return this.whoseTurn == 1;
+    }
+
+    public isBottomTurn() : boolean {
+        if (this.bottomcolor == 'white')
+            return this.whoseTurn == 0;
+        else
+            return this.whoseTurn == 1;
+    }
+
     public flipboard() {
         if (this.orientation) {
             this.orientation = false;
             this.board.orientation = this.orientation;
             this.playertop = { name: 'Hero', rating: 1500, country: 'USA'};
             this.playerbottom = { name: 'Player', rating: 1500, country: 'France'};
-            this.whitealign = 'top';
-            this.blackalign = 'bottom';
+            this.bottomcolor = 'black';
+            this.topcolor = 'white';
         } else {
             this.orientation = true;
             this.board.orientation = this.orientation;
             this.playertop = { name: 'Player', rating: 1500, country: 'France'};
             this.playerbottom = { name: 'Hero', rating: 1500, country: 'USA'};
-            this.whitealign = 'bottom';
-            this.blackalign = 'top';
+            this.bottomcolor = 'white';
+            this.topcolor = 'black';
         }
     }
 
@@ -134,6 +159,8 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.turns = 0;
         this.halfTurns = 0;
         this.whoseTurn = Sides.WHITE;
+        this.enginemoves = undefined;
+        this.enginescore = 0;
     }
 
     public selectMove(m : ChessNotationTurn, side : number) {
@@ -142,6 +169,33 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.turns = (side === Sides.WHITE) ? m.turn-1 : m.turn;
         this.halfTurns = 2*this.turns + ((side === Sides.BLACK) ? 1 : 0);
         this.whoseTurn = 1 - side;
+    }
+
+    public analysis() {
+        const value : any [] = [];
+        const fen : string = this.board.position;
+
+        this.dataService.getAnalysis(0, fen).then((move : Move) => {
+            const chess = new Chess(fen);
+            const number = chess.moveNumber();
+            const bestmove = chess.move(move.lan);
+
+            this.enginescore = (bestmove.color === 'w' ? move.strength.score : -move.strength.score);
+
+            value.push(number + (bestmove.color === 'w' ? '. ' : '. ... ') + bestmove.san);
+
+            move.continuation.forEach(m => {
+                let n = chess.moveNumber();
+                let bm = chess.move(m);
+
+                if (bm.color === 'w')
+                    value.push(n + '. ' + bm.san);
+                else
+                    value.push(bm.san);
+            });
+
+            this.enginemoves = value.join(' ');
+        });
     }
 
 //  EVENT HANDLERS

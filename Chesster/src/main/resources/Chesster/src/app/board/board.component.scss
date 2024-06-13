@@ -38,7 +38,7 @@
     height: 304px;
 }
 
-.blackturn {
+.topturn {
     width: 20px;
     height: 20px;
     margin: 4px;
@@ -46,7 +46,7 @@
     border: 1px solid black;
 }
 
-.whiteturn {
+.bottomturn {
     width: 20px;
     height: 20px;
     margin: 4px;
@@ -65,6 +65,18 @@
 .toolbox {
     width: auto;
     padding: 0px 2px 36px 8px;
+}
+
+.scorearea {
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.movearea {
+    padding: 4px;
+    border: 0px solid black;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 p-button {

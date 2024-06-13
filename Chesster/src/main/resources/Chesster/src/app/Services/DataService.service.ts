@@ -1,5 +1,9 @@
 import { Injectable } from "@angular/core";
+import { firstValueFrom } from "rxjs";
+
 import { ChessEngine } from "../Models/chessengine";
+import { Move } from "../Models/Move";
+
 
 @Injectable({
     providedIn: 'root'
@@ -28,10 +32,27 @@ export class DataService {
         this.javaConnector = f;
     }
 
+//  JAVA CONNECTOR CALLS
+
+    public async getAnalysis(index : number, fen : string) : Promise<Move> {
+        return new Promise((resolve, reject) => {
+            const move : Move = JSON.parse(this.javaConnector().getAnalysis(this.engines()[index].path, fen));
+
+            if (move != null)
+                resolve(move);
+            else
+                reject("");
+        });
+    }
+
+    public log(m : string) {
+        this.javaConnector().consoleLog(m);
+    }
+
 // FACTORIES
 
     creatNewChessEngine() : ChessEngine {
-        return { name: 'Lc0', elo: 1200, version: "1.0.0", loaded: false, go: { t: '', c: 0 }, settings:[] };
+        return { name: 'Lc0', elo: 1200, version: "1.0.0", path: '', loaded: false, go: { t: '', c: 0 }, settings:[] };
     }
 
     engines() : ChessEngine [] {
@@ -49,11 +70,11 @@ export class DataService {
                 "settings": [
                     {
                         "name": "Threads",
-                        "value": 10
+                        "value": 12
                     },
                     {
                         "name": "Hash",
-                        "value": 64
+                        "value": 4096
                     },
                     {
                         "name": "MultiPV",

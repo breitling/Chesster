@@ -6,17 +6,21 @@
                 <ng2-chessboard #board [(position)]="position" [draggable]="true" (lastMove)="move($event)" (positionChange)="handlePositionChange($event)"></ng2-chessboard>
                 <playerbox class="mt-1" [player]="playerbottom" [align]="'top'"></playerbox>
                 <div class="enginebox border-1 border-round-lg">
-                    Chess Engine
+                    <b>Chess Engine</b><br>
+                    <span class="scorearea" *ngIf="enginemoves != undefined" [ngStyle]="{'color': (enginescore >= 0 ? 'green' : 'red')}">
+                        {{enginescore}}
+                    </span><br>
+                    <textarea class="movearea" #analysisarea rows="12" cols="55">{{enginemoves}}</textarea>
                 </div>
             </div>
             <div class="turnbox">
-                <div class="blackturn" [style]="{'vertical-align': blackalign, 'visibility':  whoseTurn === 1 ? 'visible' : 'hidden'}"></div>
-                <div class="evalbar"></div>
-                <div class="whiteturn" [style]="{'vertical-align': whitealign, 'visibility':  whoseTurn === 0 ? 'visible' : 'hidden'}"></div>
+                <div class="topturn" [style]="{'background-color': topcolor, 'visibility':  isTopTurn() ? 'visible' : 'hidden'}"></div>
+                <div class="evalbar" [style]="{'visibility':  showEvalBar === true ? 'visible' : 'hidden'}"></div>
+                <div class="bottomturn" [style]="{'background-color': bottomcolor, 'visibility':  isBottomTurn() ? 'visible' : 'hidden'}"></div>
             </div>
             <div class="movebox border-1 border-round-lg">
                 <div class="m-1">
-                    <p-table id="notation" [value]="moves" [tableStyle]="{ 'min-width': '9rem' }">
+                    <p-table id="notation" [scrollable]="true" scrollHeight="838px" [value]="moves" [tableStyle]="{ 'min-width': '9rem' }">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th>&nbsp;</th>
@@ -44,7 +48,8 @@
             <p-button icon="pi pi-backward" (click)="previousMove()" tooltipPosition="top" pTooltip="Previous Move"></p-button>&nbsp;
             <p-button icon="pi pi-forward" (click)="nextMove()" tooltipPosition="top" pTooltip="Next Move"></p-button>&nbsp;
             <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
-            <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;
+            <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
+            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;
         </div>
     </div>
 </div>

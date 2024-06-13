@@ -202,6 +202,12 @@ export class ChessboardComponent {
 
     private onDrop(source: string, target: string, piece: string, newPos: any, oldPos: any, orientation: string) {
         if ((piece === 'wP' && target.endsWith('8')) || (piece === 'bP' && target.endsWith('1'))) {
+        //  const src : Square = source;
+            const listOfMoves = this.game.moves({ piece: 'p', verbose: true });
+
+            if (listOfMoves.filter(m => m.lan.startsWith(source+target)).length == 0)
+                return 'snapback';
+
             this.ref = this.dialogService.open(PromotionBox, { 
                 data: { turn: piece.charAt(0) }, 
                 showHeader: false, 
@@ -214,7 +220,6 @@ export class ChessboardComponent {
 
             this.ref.onClose.subscribe((piece : string) => {
                 const r = this.doMove(source, target, piece, newPos);
-                // WHAT IF R IS NULL? BAD DROP.
             });
 
             return 'trash';
