@@ -166,36 +166,46 @@ export class BoardComponent implements OnInit, OnDestroy {
     public selectMove(m : ChessNotationTurn, side : number) {
         this.board.position = ((side === Sides.WHITE) ? m.whiteFen : m.blackFen);
 
+        this.dataService.log(this.board.position);
+
         this.turns = (side === Sides.WHITE) ? m.turn-1 : m.turn;
         this.halfTurns = 2*this.turns + ((side === Sides.BLACK) ? 1 : 0);
         this.whoseTurn = 1 - side;
     }
 
     public analysis() {
-        const value : any [] = [];
-        const fen : string = this.board.position;
+        const values : any [] = [];
+        let fen : string = this.board.position;
 
-        this.dataService.getAnalysis(0, fen).then((move : Move) => {
-            const chess = new Chess(fen);
-            const number = chess.moveNumber();
-            const bestmove = chess.move(move.lan);
+        this.dataService.log(fen);
 
-            this.enginescore = (bestmove.color === 'w' ? move.strength.score : -move.strength.score);
+        this.dataService.getAnalysis(0, fen).then(
+            (move : Move) => {
+                const chess = new Chess(fen);
+                const number = chess.moveNumber();
+                const bestmove = chess.move(move.lan);
 
-            value.push(number + (bestmove.color === 'w' ? '. ' : '. ... ') + bestmove.san);
+                this.enginescore = (bestmove.color === 'w' ? move.strength.score : -move.strength.score);
 
-            move.continuation.forEach(m => {
-                let n = chess.moveNumber();
-                let bm = chess.move(m);
+                values.push(number + (bestmove.color === 'w' ? '. ' : '. ... ') + bestmove.san);
 
-                if (bm.color === 'w')
-                    value.push(n + '. ' + bm.san);
-                else
-                    value.push(bm.san);
-            });
+                move.continuation.forEach(m => {
+                    let n = chess.moveNumber();
+                    let bm = chess.move(m);
 
-            this.enginemoves = value.join(' ');
-        });
+                    if (bm.color === 'w')
+                        values.push(n + '. ' + bm.san);
+                    else
+                        values.push(bm.san);
+                });
+
+                this.enginemoves = values.join(' ');
+            },
+            (error : string) => {
+                this.dataService.log(error);
+                this.enginemoves = error;
+            }
+        );
     }
 
 //  EVENT HANDLERS

@@ -41,7 +41,7 @@ export class DataService {
             if (move != null)
                 resolve(move);
             else
-                reject("");
+                reject('Analysis error on ' + fen);
         });
     }
 

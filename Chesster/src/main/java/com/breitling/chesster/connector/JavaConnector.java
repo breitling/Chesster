@@ -33,26 +33,39 @@ public class JavaConnector
     
     public String getAnalysis(String path, String fen)
     {
-		try 
-		{
-	    	UCI uci = new UCI();
+    	if (fen.matches("([pnbrqkPNBRQK1-8]+\\/){7}[pnbrqkPNBRQK1-8]+\\s[bw]\\s(-|[kqKQ]{1,4})\\s(-|[a-h][36])(\\s\\d+){2}"))
+    	{
+	    	LOG.debug("Position: {}", fen);
 	    	
-	    	uci.start(path);
-			uci.setOption("Threads", "12");
-			uci.setOption("Hash", "4096");
-			
-			uci.positionFen(fen);
-
-			var r = uci.analysis(28).getResult();
-			
-			uci.close();
-			
-			return mapper.writeValueAsString(r.getBestMove());
-		} 
-		catch (IOException e) 
-		{
-			return null;
-		}
+			try 
+			{
+		    	UCI uci = new UCI();
+		    	
+		    	uci.start(path);
+				uci.setOption("Threads", "12");
+				uci.setOption("Hash", "4096");
+				
+				uci.positionFen(fen);
+	
+				var r = uci.analysis(28).getResult();
+				
+				uci.close();
+				
+				LOG.debug(r.getBestMove().toString());
+				
+				return mapper.writeValueAsString(r.getBestMove());
+			} 
+			catch (IOException e) 
+			{
+				LOG.error("Analysis failure: {}", e.getMessage());
+				return null;
+			}
+    	}
+    	else
+    	{
+    		LOG.error("Bad fen: {}", fen);
+    		return null;
+    	}
     }
     
     public void exit(int value) 

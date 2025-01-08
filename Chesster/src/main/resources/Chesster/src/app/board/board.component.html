@@ -7,10 +7,20 @@
                 <playerbox class="mt-1" [player]="playerbottom" [align]="'top'"></playerbox>
                 <div class="enginebox border-1 border-round-lg">
                     <b>Chess Engine</b><br>
-                    <span class="scorearea" *ngIf="enginemoves != undefined" [ngStyle]="{'color': (enginescore >= 0 ? 'green' : 'red')}">
+                    <span class="scorearea" *ngIf="enginemoves != undefined" [ngStyle]="{'color': (enginescore >= 0 ? 'limegreen' : 'red')}">
                         {{enginescore}}
                     </span><br>
                     <textarea class="movearea" #analysisarea rows="12" cols="55">{{enginemoves}}</textarea>
+                </div>
+                <div class="toolbox border-1 border-round-lg mt-1">
+                    <p-button icon="pi pi-undo" (click)="restart()" tooltipPosition="top" pTooltip="Restart"></p-button>&nbsp;
+                    <p-button icon="pi pi-sync" (click)="flipboard()" tooltipPosition="top" pTooltip="Flip Board"></p-button>&nbsp;&nbsp;&nbsp;
+                    <p-button icon="pi pi-step-backward" (click)="firstMove()" tooltipPosition="top" pTooltip="First Move"></p-button>&nbsp;
+                    <p-button icon="pi pi-backward" (click)="previousMove()" tooltipPosition="top" pTooltip="Previous Move"></p-button>&nbsp;
+                    <p-button icon="pi pi-forward" (click)="nextMove()" tooltipPosition="top" pTooltip="Next Move"></p-button>&nbsp;
+                    <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
+                    <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
+                    <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;
                 </div>
             </div>
             <div class="turnbox">
@@ -40,16 +50,6 @@
             </div>
         </div>
     </div>
-    <div class="databox flex border-1 border-round-lg m-1">
-        <div class="toolbox absolute bottom-0">
-            <p-button icon="pi pi-undo" (click)="restart()" tooltipPosition="top" pTooltip="Restart"></p-button>&nbsp;
-            <p-button icon="pi pi-sync" (click)="flipboard()" tooltipPosition="top" pTooltip="Flip Board"></p-button>&nbsp;&nbsp;&nbsp;
-            <p-button icon="pi pi-step-backward" (click)="firstMove()" tooltipPosition="top" pTooltip="First Move"></p-button>&nbsp;
-            <p-button icon="pi pi-backward" (click)="previousMove()" tooltipPosition="top" pTooltip="Previous Move"></p-button>&nbsp;
-            <p-button icon="pi pi-forward" (click)="nextMove()" tooltipPosition="top" pTooltip="Next Move"></p-button>&nbsp;
-            <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
-            <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
-            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;
-        </div>
+    <div class="databox flex m-1">
     </div>
 </div>
