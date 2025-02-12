@@ -9,11 +9,10 @@ import { DataService } from '../Services/DataService.service';
 
 @Component({
     selector: 'app-chessengines',
-    standalone: true,
-    imports: [CommonModule,DataViewModule,ButtonModule],
+    imports: [CommonModule, DataViewModule, ButtonModule],
     templateUrl: './chessengines.component.html',
     styleUrl: './chessengines.component.scss',
-    providers: [DataService],
+    providers: [DataService]
 })
 export class ChessEnginesComponent implements OnInit {
     engines! : ChessEngine [];

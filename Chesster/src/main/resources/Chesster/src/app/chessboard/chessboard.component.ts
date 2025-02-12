@@ -15,11 +15,10 @@ import { Variation } from '../Models/Variation';
 
 @Component({
     selector: 'ng2-chessboard',
-    standalone: true,
-    imports: [CommonModule,ButtonModule],
+    imports: [CommonModule, ButtonModule],
     templateUrl: './chessboard.component.html',
     styleUrl: './chessboard.component.scss',
-    providers: [DialogService,DynamicDialogRef]
+    providers: [DialogService, DynamicDialogRef]
 })
 export class ChessboardComponent {
 

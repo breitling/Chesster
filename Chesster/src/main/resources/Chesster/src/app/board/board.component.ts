@@ -27,9 +27,8 @@ import { TabViewModule } from 'primeng/tabview';
 
 @Component({
     selector: 'app-board',
-    standalone: true,
-    imports: [CommonModule,FlexLayoutModule,ChessboardComponent,ButtonModule,PlayerBoxComponent,TableModule,TabViewModule,TooltipModule,FormsModule,
-                    InputTextModule,TextareaModule,ContextMenuModule],
+    imports: [CommonModule, FlexLayoutModule, ChessboardComponent, ButtonModule, PlayerBoxComponent, TableModule, TabViewModule, TooltipModule, FormsModule,
+        InputTextModule, TextareaModule, ContextMenuModule],
     templateUrl: './board.component.html',
     styleUrl: './board.component.scss'
 })

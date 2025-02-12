@@ -5,11 +5,10 @@ import { Player } from '../Models/Player';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'playerbox',
-  standalone: true,
-  imports: [CommonModule, AvatarModule],
-  templateUrl: './playerbox.component.html',
-  styleUrl: './playerbox.component.scss'
+    selector: 'playerbox',
+    imports: [CommonModule, AvatarModule],
+    templateUrl: './playerbox.component.html',
+    styleUrl: './playerbox.component.scss'
 })
 export class PlayerBoxComponent {
     @Input() public player: Player;

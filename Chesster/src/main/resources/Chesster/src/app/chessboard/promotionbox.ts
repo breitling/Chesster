@@ -5,9 +5,8 @@ import { ButtonModule } from "primeng/button";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 
 @Component({
-    standalone: true,
-    imports:[CommonModule,ButtonModule],
-    styles: [ "img {width: 46px; height: 46px;}"],
+    imports: [CommonModule, ButtonModule],
+    styles: ["img {width: 46px; height: 46px;}"],
     template: `
         <div id="promotion" class="flex flex-column" *ngIf="turn === 'w'">
             <p-button [text]="true" [rounded]="true" (click)="promotionPiece('q')"><img src="/assets/img/defaults/wQ.png"></p-button>

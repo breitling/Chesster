@@ -19,8 +19,7 @@ import { DataService } from '../Services/DataService.service';
 
 @Component({
     selector: 'app-user',
-    standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,FormsModule,MessagesModule,InputTextModule,TextareaModule,DropdownModule],
+    imports: [CommonModule, ButtonModule, TableModule, FormsModule, MessagesModule, InputTextModule, TextareaModule, DropdownModule],
     templateUrl: './user.component.html',
     styleUrl: './user.component.scss'
 })

@@ -18,9 +18,8 @@ import { Message, MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-databases',
-    standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,InputTextModule,TextareaModule,FormsModule,AutoFocusModule,TooltipModule,
-                            FileUploadModule,FileselectionComponent,DialogModule,MessageModule],
+    imports: [CommonModule, ButtonModule, TableModule, InputTextModule, TextareaModule, FormsModule, AutoFocusModule, TooltipModule,
+        FileUploadModule, FileselectionComponent, DialogModule, MessageModule],
     providers: [],
     templateUrl: './databases.component.html',
     styleUrl: './databases.component.scss'

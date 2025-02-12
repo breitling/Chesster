@@ -12,11 +12,10 @@ import { DataService } from './Services/DataService.service';
 
 @Component({
     selector: 'app-root',
-    standalone: true,
     imports: [RouterOutlet, SidebarComponent, MenubarModule, DialogModule, ButtonModule],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    providers: [DataService],
+    providers: [DataService]
 })
 export class AppComponent implements OnInit {
     title = 'Chesster';
