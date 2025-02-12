@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { PrimeNGConfig } from 'primeng/api';
+import { PrimeNG } from 'primeng/config';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     items: MenuItem[] | undefined;
     visible: boolean = false;
 
-    constructor(private primengConfig: PrimeNGConfig, private router: Router, private dataService : DataService) {
+    constructor(private primeng: PrimeNG, private router: Router, private dataService : DataService) {
         //@ts-ignore
         dataService.setJavaConnector(window['getJavaConnector']);
     }

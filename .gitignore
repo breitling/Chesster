@@ -1,6 +1,6 @@
-/target/
+/Chesster/target/
 
-src/main/resources/Chesster/node_modules
-src/main/resources/Chesster/dist
-src/main/resources/Chesster/.angular
-src/main/resources/Chesster/.vscode
+/Chesster/src/main/resources/Chesster/node_modules
+/Chesster/src/main/resources/Chesster/dist
+/Chesster/src/main/resources/Chesster/.angular
+/Chesster/src/main/resources/Chesster/.vscode

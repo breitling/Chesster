@@ -11,6 +11,7 @@ declare var $: any;
 declare var ChessBoard: any;
 
 import { Chess } from 'chess.js';
+import { Variation } from '../Models/Variation';
 
 @Component({
     selector: 'ng2-chessboard',
@@ -22,8 +23,12 @@ import { Chess } from 'chess.js';
 })
 export class ChessboardComponent {
 
-    board: any;
-    game: Chess;
+    board: any;                     // the chess board
+
+    gORv: Chess;                    // the game or the variation(s)(?)
+
+    game: Chess;                    // the game
+    variations: Chess [] = [];       // the variations
 
     ref: DynamicDialogRef | undefined;
 
@@ -43,6 +48,7 @@ export class ChessboardComponent {
 
     constructor(private dataService : DataService, public dialogService: DialogService) {
         this.game = new Chess();
+        this.gORv = this.game;
     }
 
     ngOnInit() {
@@ -52,77 +58,88 @@ export class ChessboardComponent {
   // PARAMETERS
 
     @HostListener('window:resize', ['$event'])
-    onResize(event: Event){
-        if (this.board) this.board.resize(event);
+    onResize(event: Event) {
+        if (this.board) 
+            this.board.resize(event);
     }
 
     @Input()
     set position(value: any) {
         this._position = value;
-        if (this.board) this.board.position(value, this.animation);
+        if (this.board) 
+            this.board.position(value, this.animation);
     //  console.log(value);
     }
 
     @Input()
     set orientation(value: Boolean) {
         this._orientation = value;
-        if(this.board) this.board.orientation(value ? 'white' : 'black');
+        if (this.board) 
+            this.board.orientation(value ? 'white' : 'black');
         this.orientationChange.emit(this._orientation);
     }
 
     @Input()
     set showNotation(value: Boolean) {
         this._showNotation = value;
-        if(this.board) this.load();
+        if(this.board) 
+            this.load();
         this.showNotationChange.emit(this._showNotation);
     }
 
     @Input()
     set draggable(value: Boolean) {
         this._draggable = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.draggableChange.emit(this._draggable);
     }
 
     @Input()
     set dropOffBoard(value: string) {
         this._dropOffBoard = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.dropOffBoardChange.emit(this._dropOffBoard);
     }
 
     @Input()
     set pieceTheme(value: any) {
         this._pieceTheme = value instanceof Function ? value() : value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.pieceThemeChange.emit(this._pieceTheme);
     }
 
     @Input()
     set moveSpeed(value: any) {
         this._moveSpeed = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.moveSpeedChange.emit(this._moveSpeed);
     }
 
     @Input()
     set snapbackSpeed(value: any) {
         this._snapbackSpeed = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.snapbackSpeedChange.emit(this._snapbackSpeed);
     }
 
     @Input()
     set snapSpeed(value: any) {
         this._snapSpeed = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.snapSpeedChange.emit(this._snapSpeed);
     }
 
     @Input()
     set sparePieces(value: Boolean) {
         this._sparePieces = value;
-        if(this.board) this.load();
+        if (this.board) 
+            this.load();
         this.sparePiecesChange.emit(this._sparePieces);
     }
 
@@ -152,25 +169,65 @@ export class ChessboardComponent {
   // METHODS
 
     public clear() {
-        this.board.clear(this.animation);
+        this.board.clear; // (this.animation);
     }
 
     public move(notation: string) {
-        this.board.move(notation);
+        this.gORv.move(notation);
+        this._position = this.game.fen();
+    //  this.board.move(notation);
     }
 
-    public fen() {
-        return this.game.fen();
+    public fen() : string {
+        return this.gORv.fen();
     }
 
     public reset() {
-        this.game.reset();
-        this.position = 'start'; // this.game.fen();
+        this._position = 'start';
+
+        this.gORv = this.game;
+        this.variations = [];
+
+        this.gORv.reset();
     }
 
     public undo() {
-        this.game.undo();
-        this.position = this.game.fen();
+        this.gORv.undo();
+        this._position = this.gORv.fen();
+    }
+
+    public toFEN() : string {
+        return this.board.fen();
+    }
+
+//  VARIATION STUFF
+
+    public startVariation(fen : string) : string {
+        const variation = new Chess();
+
+        variation.load(fen);
+        this._position = fen;
+        this.gORv = variation;
+
+        this.variations.push(variation);
+
+        return this.gORv.fen();
+    }
+
+    public selectVariation(v : Variation) : string {
+        this.variations.forEach((variation) => {
+            if (v.fen === variation.fen()) {
+                this.gORv = variation;
+            }
+        });
+
+        return this.gORv.fen();
+    }
+
+    public selectGame() : string {
+        this.gORv = this.game;
+
+        return this.gORv.fen();
     }
 
   // EVENTS
@@ -187,9 +244,9 @@ export class ChessboardComponent {
     }
 
     private onDragStart(source: string, piece: string, position: any, orientation: string) {
-        if (this.game.isGameOver() ||
-           (this.game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-           (this.game.turn() === 'b' && piece.search(/^w/) !== -1))
+        if (this.gORv.isGameOver() ||
+           (this.gORv.turn() === 'w' && piece.search(/^b/) !== -1) ||
+           (this.gORv.turn() === 'b' && piece.search(/^w/) !== -1))
         {
             return false;
         } else {
@@ -203,7 +260,7 @@ export class ChessboardComponent {
     private onDrop(source: string, target: string, piece: string, newPos: any, oldPos: any, orientation: string) {
         if ((piece === 'wP' && target.endsWith('8')) || (piece === 'bP' && target.endsWith('1'))) {
         //  const src : Square = source;
-            const listOfMoves = this.game.moves({ piece: 'p', verbose: true });
+            const listOfMoves = this.gORv.moves({ piece: 'p', verbose: true });
 
             if (listOfMoves.filter(m => m.lan.startsWith(source+target)).length == 0)
                 return 'snapback';
@@ -232,7 +289,7 @@ export class ChessboardComponent {
         let move = null;
         
         try {
-            move = this.game.move({from: source, to: target, promotion: promotion });
+            move = this.gORv.move({from: source, to: target, promotion: promotion });
         } catch(e) {
             move = null;
         }
@@ -241,11 +298,11 @@ export class ChessboardComponent {
             return 'snapback';
         }
 
-        const moves = this.game.history();
+        const moves = this.gORv.history();
         this.lastMove.emit(moves[moves.length-1]);
 
         this._position = newPos;
-        this.positionChange.emit(this.game.fen());
+        this.positionChange.emit(this.gORv.fen());
 
         return '';
     }
@@ -258,29 +315,29 @@ export class ChessboardComponent {
     }
 
     private onSnapEnd(source: string, target: string, piece: string) {
-        this.board.position(this.game.fen());
+        this.board._position = this.gORv.fen();
     }
 
     private load() {
         this.board = ChessBoard('ng2-board', {
-          'position': this._position,
-          'orientation': this._orientation ? 'white' : 'black',
-          'showNotation': this._showNotation,
-          'draggable': this._draggable,
-          'dropOffBoard': this._dropOffBoard,
-          'pieceTheme': this._pieceTheme,
-          'moveSpeed': this._moveSpeed,
-          'snapbackSpeed': this._snapbackSpeed,
-          'snapSpeed': this._snapSpeed,
-          'sparePieces': this._sparePieces,
+            'position': this._position,
+            'orientation': this._orientation ? 'white' : 'black',
+            'showNotation': this._showNotation,
+            'draggable': this._draggable,
+            'dropOffBoard': this._dropOffBoard,
+            'pieceTheme': this._pieceTheme,
+            'moveSpeed': this._moveSpeed,
+            'snapbackSpeed': this._snapbackSpeed,
+            'snapSpeed': this._snapSpeed,
+            'sparePieces': this._sparePieces,
 
-          'onDragStart': this.onDragStart.bind(this),
-          'onChange': this.onChangeHandler.bind(this),
-          'onDragMove': this.onDragMove.bind(this),
-          'onDrop': this.onDrop.bind(this),
-          'onSnapbackEnd': this.onSnapbackEnd.bind(this),
-          'onMoveEnd': this.onMoveEnd.bind(this),
-          'onSnapEnd' : this.onSnapEnd.bind(this)
+            'onDragStart': this.onDragStart.bind(this),
+            'onChange': this.onChangeHandler.bind(this),
+            'onDragMove': this.onDragMove.bind(this),
+            'onDrop': this.onDrop.bind(this),
+            'onSnapbackEnd': this.onSnapbackEnd.bind(this),
+            'onMoveEnd': this.onMoveEnd.bind(this),
+            'onSnapEnd' : this.onSnapEnd.bind(this)
         });
     }
 }

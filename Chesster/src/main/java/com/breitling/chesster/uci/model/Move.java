@@ -44,7 +44,7 @@ public class Move implements Comparable<Move>
 
     @Override
     public String toString() {
-        return "Move{lan='" + lan + '\'' + ", strength=" + strength + ", pv=" + pv + ", depth=" + depth +
+        return "Move{lan='" + lan + '\'' + ", strength=" + strength.toString() + ", pv=" + pv + ", depth=" + depth +
         	    				", continuation=" + Arrays.toString(continuation) + '}';
     }
 

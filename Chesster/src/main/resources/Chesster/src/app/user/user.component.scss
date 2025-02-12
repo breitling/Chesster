@@ -17,3 +17,27 @@ h3 {
     font-size: 1rem;
     margin-block-end: 1px !important;
 }
+
+.new-title {
+    background-color: rgb(77, 199, 77);
+    width: 100%;
+}
+
+label {
+    display: inline-block;
+    width: 7rem;
+    margin: 2px;
+    padding: 5px;
+    font-weight: bold;
+    text-align: right;
+}
+
+input {
+    margin: 2px;
+    padding: 5px;
+    width: 20rem;
+}
+
+p { 
+    text-align: center;
+}

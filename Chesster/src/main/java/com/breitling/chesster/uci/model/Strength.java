@@ -34,10 +34,10 @@ public class Strength implements Comparable<Strength>
     @Override
     public String toString()
     {
-        if (isMate) {
+        if (this.isMate) {
             return "M" + mateIn;
         }
-        return score+"";
+        return "" + this.score;
     }
 
     @Override

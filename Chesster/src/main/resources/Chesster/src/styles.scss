@@ -1,7 +1,8 @@
+/*
 @import "primeng/resources/primeng.css";
-@import "primeng/resources/themes/aura-light-blue/theme.css";
 @import "primeflex/primeflex.css";
 @import "primeicons/primeicons.css";
+*/
 
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -63,6 +64,27 @@ body {
 #notation .p-datatable-thead tr:first-child > th:nth-child(1) { width:  30px; }
 #notation .p-datatable-tbody tr:first-child > td:nth-child(1) { color: #21610B; }
 
+/* Chess variations table */
+
+#variations .p-datatable-thead > tr > th {
+    color: #21610B;
+    border: 0px solid white;
+    padding: 2px;
+    font-size: small;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+#variations .p-datatable-tbody > tr > td {
+    border: 0px solid white;
+    padding: 2px;
+    font-size: 0.9rem;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+}
+
+#variations .p-datatable-thead tr:first-child > th:nth-child(1) { width: 3rem; }
+#variations .p-datatable-tbody tr:first-child > td:nth-child(1) { color: #21610B; }
+
 /* Promotion Box */
 
 .p-dialog .p-dialog-content {
@@ -71,4 +93,96 @@ body {
 
 #promotion .p-button { 
     padding: 2px;
+}
+
+/* Databases table */
+
+#databases .p-datatable-thead > tr > th {
+    border: 1px solid black;
+    background-color: rgb(158, 186, 236);
+    padding: 2px;
+    font-size: small;
+    font-weight: bolder;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#databases .p-datatable-tbody > tr > td {
+    padding: 2px;
+    font-size: medium;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#databases .p-datatable-thead tr:first-child > th:nth-child(1) { width:  6rem; }
+
+/* Games table */
+
+#games .p-datatable-thead > tr > th {
+    border: 1px solid black;
+    background-color: rgb(235, 157, 13);
+    padding: 2px;
+    font-size: small;
+    font-weight: bolder;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#games .p-datatable-tbody > tr > td {
+    padding: 2px;
+    font-size: medium;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#games .p-datatable-thead tr:first-child > th:nth-child(1) { width:  4rem; }
+#games .p-datatable-thead tr:first-child > th:nth-child(2) { width:  4rem; }
+#games .p-datatable-thead tr:first-child > th:nth-child(3) { width:  3rem; }
+#games .p-datatable-thead tr:first-child > th:nth-child(4) { width:  3rem; }
+
+/* Games table */
+
+#cdcgames .p-datatable-thead > tr > th {
+    border: 1px solid black;
+    background-color: rgb(235, 35, 13);
+    padding: 2px;
+    font-size: small;
+    font-weight: bolder;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#cdcgames .p-datatable-tbody > tr > td {
+    padding: 2px;
+    font-size: medium;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(1) { width:  2rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(2) { width:  12rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(3) { width:  12rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(4) { width:  4rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(4) { width:  6rem; }
+
+/* Chess Boards Colors */
+
+.white-1e1d7{background-color:#f7fff5 !important; }
+.black-3c85d{background-color:#779956 !important; }
+
+/* Chess Board Tabs */
+
+.p-tabview-nav > .p-highlight {
+    border: 1px solid black;
+    border-radius: 6px;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    border: 3px solid black;
+    background-color: rgb(208, 217, 219);
+    padding: 0.5rem;
+}
+
+.p-tabview .p-tabview-title {
+    background-color: rgb(208, 217, 219);
 }

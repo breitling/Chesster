@@ -1,6 +1,6 @@
 export interface Strength {
     score : number;
-    isMate : boolean;
+    forcedMate : boolean;
     mateIn : number;
 }
 

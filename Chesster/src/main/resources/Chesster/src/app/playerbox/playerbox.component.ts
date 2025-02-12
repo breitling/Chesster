@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 
 import { Player } from '../Models/Player';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'playerbox',
   standalone: true,
-  imports: [AvatarModule],
+  imports: [CommonModule, AvatarModule],
   templateUrl: './playerbox.component.html',
   styleUrl: './playerbox.component.scss'
 })

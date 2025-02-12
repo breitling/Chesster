@@ -53,6 +53,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.breitling.</groupId>
+            <artifactId>jclib</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     <!-- JavaFX -->
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -80,6 +90,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+        	<groupId>com.breitling</groupId>
+        	<artifactId>jclib</artifactId>
+        	<version>1.0.0</version>
         </dependency>
     </dependencies>
     

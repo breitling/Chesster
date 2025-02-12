@@ -7,12 +7,17 @@ import com.breitling.chesster.connector.JavaConnector;
 
 import javafx.application.Application;
 import javafx.concurrent.Worker;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebErrorEvent;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
@@ -23,7 +28,7 @@ public class FxApp extends Application
 	private static final Logger LOG = LoggerFactory.getLogger(FxApp.class);
 
 	private JSObject javascriptConnector;
-	private JavaConnector javaConnector = new JavaConnector();
+	private JavaConnector javaConnector = ChessterApp.getBean(JavaConnector.class);
 
 	public static void main(String... args) {
 		Application.launch(args);
@@ -43,8 +48,9 @@ public class FxApp extends Application
 				window.setMember("javaConnector", javaConnector);
 				javascriptConnector = (JSObject) b.webEngine.executeScript("getJsConnector()");
 				javaConnector.setJavascriptConnector(javascriptConnector);
-			//  SETUP JAVASCRIPT CONSOLE TO SYSTEM.OUT
+			//  SETUP JAVASCRIPT CONSOLE TO SYSTEM.OUT, ETC
 	 			b.webEngine.executeScript("console.log = function(message) { javaConnector.log(message); };");
+	 			b.webEngine.executeScript("window.onerror = function(msg, url, line, col, error) { return javaConnector.onError(msg, url, line, col, error);};"); 
 			}
 		});
 
@@ -63,9 +69,28 @@ public class FxApp extends Application
 		
 		public Browser()
 		{
+		//	browser.setContextMenuEnabled(false);
+			
 			getStyleClass().add("browser");
 			webEngine.load(url);
 			getChildren().add(browser);
+			
+			webEngine.setOnError(new EventHandler<WebErrorEvent>()
+			{
+				@Override
+			    public void handle(WebErrorEvent event) {
+			        System.err.println(event);
+			    }
+			});
+
+			browser.setOnMousePressed(e -> {
+	            if (e.getButton() == MouseButton.SECONDARY) {
+	            	Event.fireEvent(browser, new MouseEvent(MouseEvent.MOUSE_CLICKED, e.getX(), e.getY(),
+	                        e.getScreenX(), e.getScreenY(), MouseButton.SECONDARY, 1, false, false, false, false,
+	                        false, false, true, false, false, false, e.getPickResult()));
+	            //	System.err.println("right click!");
+	            }
+	        });
 		}
 
 		@Override 

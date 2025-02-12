@@ -13,7 +13,33 @@
     height: 100%;
 }
 
+.new-title {
+    padding: 5px;
+    background-color: rgb(158, 186, 236);
+}
+
+.update-title {
+    padding: 5px;
+    background-color: rgb(28, 152, 61);
+}
+
+.w-100 {
+    width: 100%;
+}
+
 h3 {
     font-size: 1rem;
     margin-block-end: 1px !important;
+    width: auto;
+}
+
+label {
+    display: block;
+    padding: 5px;
+    font-weight: bold;
+}
+
+input {
+    padding: 5px;
+    width: 40rem;
 }

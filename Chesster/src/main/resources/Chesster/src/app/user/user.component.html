@@ -1,11 +1,73 @@
 <div class="main flex flex-row">
-    <div class="box m-1">
-        <div class="block m-2">
+    <div class="box m-1" style="z-index: 100;">
+        <div class="block m-5">
             <h3>Hero Information:</h3>
         </div>
-        <div class="block m-2">
+        <div class="block m-1">
+            <div class="p-1">
+                <label for="account">Chess.com Account: </label>
+                <input type="text" #white pInputText id="white" [(ngModel)]="account"/>
+            </div>
+        </div>
+        <div class="card m-5">
+            <p-messages [(value)]="messages" [enableService]="false" [closable]="true"></p-messages>
         </div>
     </div>
-    <div class="databox flex border-1 border-round-lg align-items-center justify-content-center m-1">
+    <div class="databox flex  border-1 border-round-lg m-1">
+        <div class="w-100 m-5" *ngIf="account.length > 0" style="z-index: 100;">
+            <h3 class="new-title"> Import Games From Chess.com </h3>
+            <div class="p-2">
+                <label for="year">Year:</label>
+                <input type="text" pInputText id="year" [(ngModel)]="year"/>
+            </div>
+            <div class="p-2">
+                <label for="month">Month:</label>
+                <input type="text" pInputText id="month" [(ngModel)]="month"/>
+            </div>
+            <div class="p-2">
+                <label for="notes">Time Class:</label>
+                <p-dropdown [options]="timeClasses" [(ngModel)]="timeClass" optionLabel="class" placeholder="Select a Time Class"></p-dropdown>
+            </div>
+            <div class="p-2">
+                <p-button severity="success" (click)="getGames()">Get Games</p-button>
+            </div>
+
+            <div class="flex border-1 border-round-lg m-2" *ngIf="games.length > 0">
+                <div class="p-2">
+                    <p-table id="cdcgames" [value]="games" [scrollable]="true" scrollHeight="550px" selectionMode="multiple" [(selection)]="selectedGames" 
+                                dataKey="tcn" [tableStyle]="{'min-width': '50rem'}">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th></th>
+                                <th>White</th>
+                                <th>Black</th>
+                                <th>Class</th>
+                                <th>Result</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-game>
+                            <tr>
+                                <td>
+                                    <p-tableCheckbox [value]="game"/>
+                                </td>
+                                <td>{{game.white.username}}</td>
+                                <td>{{game.black.username}}</td>
+                                <td>{{game.time_class}}</td>
+                                <td>{{game.result}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+
+            <div class="p-2" *ngIf="games.length > 0 && database">
+                <p-button (click)="import()">Import</p-button>&nbsp;
+            </div>
+
+            <div class="w-100 p-2">
+                <p *ngIf="database"><b>Database:</b> {{database.ds.name}}</p>
+                <p *ngIf="!database">Please select a database.</p>
+            </div>
+        </div>
     </div>
 </div>

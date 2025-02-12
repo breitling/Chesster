@@ -1,0 +1,8 @@
+<div class="p-col p-d-flex" style="overflow: hidden">
+    <div class="container p-d-flex" style="overflow: hidden">
+        <p-tree [value]="files" selectionMode="checkbox" (onNodeExpand)="nodeExpand($event)" (onNodeCollapse)="nodeCollapse($event)"
+                                (onNodeSelect)="nodeSelect($event)" (onNodeUnselect)="nodeUnSelect($event)" [propagateSelectionUp]="false" 
+                                [(selection)]="selected">
+        </p-tree>
+    </div>
+</div>
