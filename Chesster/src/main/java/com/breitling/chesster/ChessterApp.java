@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 
 import com.breitling.jclib.SharedConfigurationReference;
 
-
 @SpringBootApplication(scanBasePackages="com.breitling.chesster")
 @Import(SharedConfigurationReference.class)
 public class ChessterApp 

@@ -1,8 +1,15 @@
-<div class="box">
-    <p-avatar image="/assets/defaultplayer.png" size="large" shape="square"/> &nbsp;
-    <span [style]="{'vertical-align': align }">
+<div class="box flex-row">
+    <p-avatar image="/assets/user-image.png" size="large" shape="square"/> &nbsp;
+    <span [style]="{ 'vertical-align': align }">
         <b>{{player.name}}</b> &nbsp; 
         <span *ngIf="player.rating > 0">({{player.rating}})</span> &nbsp; 
-        <img src="/assets/flags/{{player.country}}.png" alt="{{player.country}}" [style]="{'vertical-align': align }" >
+        <img src="/assets/flags/{{player.country}}.png" alt="{{player.country}}" [style]="{'vertical-align': align }"> 
+    </span>
+    <span class="captured" [style]="{ 'vertical-align': align }">
+        <span [ngClass]="pawnKlass"></span>
+        <span [ngClass]="knightKlass"></span>
+        <span [ngClass]="bishopKlass"></span>
+        <span [ngClass]="rookKlass"></span>
+        <span [ngClass]="queenKlass"></span>
     </span>
 </div>

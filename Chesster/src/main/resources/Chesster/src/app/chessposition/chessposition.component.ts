@@ -7,6 +7,7 @@ declare var ChessBoard: any;
 
 @Component({
     selector: 'ng2-chessposition',
+    standalone: true,
     imports: [CommonModule],
     templateUrl: './chessposition.component.html',
     styleUrl: './chessposition.component.scss'

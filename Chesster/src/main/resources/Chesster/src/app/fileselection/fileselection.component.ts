@@ -8,6 +8,7 @@ import { TreeModule } from 'primeng/tree';
 
 @Component({
     selector: 'fileSelection',
+    standalone: true,
     imports: [TreeModule],
     templateUrl: './fileselection.component.html',
     styleUrl: './fileselection.component.scss'

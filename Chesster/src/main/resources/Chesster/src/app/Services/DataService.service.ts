@@ -1,10 +1,11 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable, NgZone } from "@angular/core";
 
 import { ChessEngine } from "../Models/chessengine";
 import { Move } from "../Models/Move";
 import { Database } from "../Models/Database";
 import { Game } from "../Models/Game";
 import { Variation } from "../Models/Variation";
+import { Note } from "../Models/Note";
 
 
 @Injectable({
@@ -20,13 +21,15 @@ export class DataService {
 
     private preloadedGame : Game | undefined;
 
+    public gameReviewEmitter : EventEmitter<string> = new EventEmitter();
+
 //  BOARDS
 
     private clearBoard : string = '8/8/8/8/8/8/8/8';
 //  private startBOard : string = 'rnbqkbnr/pppppppp/8/8/8/8/pppppppp/RNBQKBNR';
     private chessPositionBoard : string = this.clearBoard;
 
-    constructor () {
+    constructor (private ngZone: NgZone) {
         this.javaConnector = () => { return 'TBI'; };
         this.games = [];
         this.preloadedGame = undefined;
@@ -194,6 +197,10 @@ export class DataService {
         });
     }
 
+    public deleteGame(id : string, gid : string) {
+        return this.javaConnector().deleteGame(id, gid);
+    }
+
     public log(m : string) {
         this.javaConnector().consoleLog(m);
     }
@@ -203,7 +210,6 @@ export class DataService {
     }
 
     public updateDatabase(id: string, name: string, path: string, notes: string) : string {
-        this.log("Got Here: " + id);
         return this.javaConnector().updateDatabase(id, name, path, notes);
     }
 
@@ -211,7 +217,7 @@ export class DataService {
         return this.javaConnector().deleteDatabase(id);
     }
 
-    public import(id : string) : Promise<string> {
+    public async import(id : string) : Promise<string> {
         return new Promise((resolve, reject) => {
             const r = this.javaConnector().importGames(id);
 
@@ -222,7 +228,7 @@ export class DataService {
         });
     }
 
-    public getGamesFromCDC(account: string, year: string, month: string, timeClass: string) : Promise<string> {
+    public async getGamesFromCDC(account: string, year: string, month: string, timeClass: string) : Promise<string> {
         return new Promise((resolve, reject) => {
             const data = this.javaConnector().getGamesFromCDC(account, year, month, timeClass);
 
@@ -230,6 +236,80 @@ export class DataService {
                 resolve(data);
             else
                 reject('Failed to import games from Chess.com.');
+        });
+    }
+
+    public doGameReview(index : number, depth: number, g :  Game, progressBarCallback : Function) : string {
+        let rc = '';
+        let progress = 0;
+
+        this.ngZone.runOutsideAngular(() => {
+            const interval = setInterval(() => {
+                this.ngZone.run(() => {
+                    progress = this.javaConnector().reviewGame(this.engines()[index].path, depth, progress, JSON.stringify(g));
+                    progressBarCallback(progress);
+                    if (progress >= 100) {
+                        this.gameReviewEmitter.emit('Done');
+                        clearInterval(interval);
+                    }
+                });
+            }, 1000);
+        });
+
+        return rc;
+    }
+
+    public async abortReview() : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const msg = this.javaConnector().abortReview();
+
+            if (msg == 'Aborted')
+                resolve('Review Aborted.');
+            else
+                reject('Failed to abort review.');
+        });
+    }
+
+    public getReviewAnalysis() : any [] {
+        const data = this.javaConnector().getReviewAnalysis();
+        return JSON.parse(data);
+    }
+
+    public doGarbageCollection() : string {
+        return this.javaConnector().doGC();
+    }
+
+    public async getNotes(id: string, gameid: string) : Promise<Note []> {
+        return new Promise((resolve, reject) => {
+            const data = this.javaConnector().getNotes(id, gameid);
+            const notes : Note [] = JSON.parse(data);
+
+            if (notes)
+                resolve(notes);
+            else
+                reject('Failed to get notes.');
+        });
+    }
+
+    public async saveNote(id: string, note : Note) : Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            const b = this.javaConnector().saveNote(id,  JSON.stringify(note));
+
+            if (b)
+                resolve(true);
+            else
+                reject('Failed to save note.')
+        });
+    }
+
+    public async deleteNote(id: string, note: Note) : Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            const b = this.javaConnector().deleteNote(id, note.id);
+
+            if (b)
+                resolve(true);
+            else
+                reject('Failed to delete note.')
         });
     }
 
@@ -251,7 +331,17 @@ export class DataService {
     }
 
     createVariation(index: number) : Variation {
-        return { index: index, fen: '', value: '0.', moves: [], side: 0, turn: 0};
+        return { index: index, fen: '', value: '0.', startingFen: '', side: 0, turn: 0, moveCount: 0};
+    }
+
+    createNote(gameid : string) : Note {
+        return { id: '', gameId: gameid, note : '', created: new Date() };
+    }
+
+//  CHESS ENGINES
+
+    public engineIndex() {
+        return 1; // SF 17.1
     }
 
     engines() : ChessEngine [] {
@@ -286,7 +376,7 @@ export class DataService {
                 ]
             },
             {
-                "name": "Stockfish 17",
+                "name": "Stockfish 17.1",
                 "version": "17.1",
                 "path": "C:\\Users\\bobbr\\Desktop\\Chess\\Stockfish\\stockfish-17\\stockfish-windows-x86-64-avx2.exe",
                 "elo": 3800,

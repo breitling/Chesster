@@ -11,7 +11,7 @@
             <p-table #dbtable id="games" [value]="games" selectionMode="single" [(selection)]="selectedGame" dataKey="id" 
                         [scrollable]="true"  scrollHeight="886px" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" 
                         styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '30rem' }">
-                <ng-template pTemplate="header">
+                <ng-template #header>
                     <tr>
                         <th>White</th>
                         <th>Black</th>
@@ -19,7 +19,7 @@
                         <th>Moves</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-game>
+                <ng-template #body let-game>
                     <tr [pSelectableRow]="game">
                         <td>{{game.white}}</td>
                         <td>{{game.black}}</td>
@@ -63,14 +63,17 @@
                 <input type="text" pInputText id="count" [(ngModel)]="selectedGame.moveCount"/>
             </div>
             <div class="p-2">
-                <textarea rows="15" cols="80" pInputTextarea  [(ngModel)]="selectedGame.moves"></textarea>
+                <textarea rows="15" cols="100" pInputTextarea  [(ngModel)]="selectedGame.moves"></textarea>
             </div>
             <div class="p-2">
                 <p-button (click)="load()">Load to Board</p-button>&nbsp;
                 <p-button severity="success" (click)="update()">Update</p-button>&nbsp;
+                <p-button severity="danger" (click)="delete()">Delete</p-button>&nbsp;
             </div>
             <div class="card m-5">
-                <p-messages [(value)]="messages" [enableService]="false" [closable]="true"></p-messages>
+                @for (message of messages(); track message; ) {
+                    <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+                }
             </div>
         </p-panel>
 

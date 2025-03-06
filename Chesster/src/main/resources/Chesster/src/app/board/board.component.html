@@ -2,16 +2,21 @@
     <div class="box">
         <div class="flex flex-row">
             <div class="boardbox flex flex-column">
-                <playerbox [player]="playertop" [align]="'bottom'"></playerbox>
+                <playerbox [player]="playertop" [align]="'bottom'" [color]="bottomcolor" [fen]="getFen()"></playerbox>
                 <ng2-chessboard #board [(position)]="position" [draggable]="true" (lastMove)="move($event)" (positionChange)="handlePositionChange($event)"></ng2-chessboard>
-                <playerbox class="mt-1" [player]="playerbottom" [align]="'top'"></playerbox>
-                <div class="enginebox border-1 border-round-lg">
-                    <b>Chess Engine</b><br>
-                    {{mate}} <br>
+                <playerbox class="mt-1" [player]="playerbottom" [align]="'top'" [color]="topcolor" [fen]="getFen()"></playerbox>
+                <div class="enginebox border-1 border-round-lg p-2">
+                    <b>{{engineName}}</b><br>{{mate}}<br>
                     <span class="scorearea" *ngIf="enginemoves != undefined" [ngStyle]="{'color': (enginescore >= 0 ? 'limegreen' : 'red')}">
                         {{enginescore}}
                     </span><br>
-                    <textarea class="movearea" #analysisarea rows="12" cols="55">{{enginemoves}}</textarea>
+                    <textarea class="movearea" #analysisarea rows="6" cols="55">{{enginemoves}}</textarea>
+                    <p-button severity="info" (click)="newVariation()" *ngIf="enginemoves">Add as Variation</p-button>
+                </div>
+                <div class="flex flex-row m-2">
+                    @for (message of messages(); track message; ) {
+                        <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+                    }
                 </div>
             </div>
             <div class="turnbox">
@@ -19,104 +24,75 @@
                 <div class="evalbar" [style]="{'visibility':  showEvalBar === true ? 'visible' : 'hidden'}"></div>
                 <div class="bottomturn" [style]="{'background-color': bottomcolor, 'visibility':  isBottomTurn() ? 'visible' : 'hidden'}"></div>
             </div>
+            
+            <p-tabs #tabs [value]="tabindex" style="width: 100%">
+                <p-tablist>
+                    <p-tab [value]="0">Moves & Variations</p-tab>
+                    <p-tab [value]="1">Game Notes</p-tab>
+                    <p-tab [value]="2">Save & Update</p-tab>
+                    <p-tab [value]="3">Game Analysis</p-tab>
+                </p-tablist>
 
-            <p-tabView  [(activeIndex)]="activeIndex">
-                <p-tabPanel header="Moves & Variations">
-                    <div class="movebox border-1 border-round-lg">
-                        <div class="mt-1">
-                            <p-contextMenu #movecm [model]="items" [autoZIndex]="false" [style]="{ 'z-index' : '2000' }"/>
-                            <p-table id="notation" [scrollable]="true" scrollHeight="820px" [value]="moves" [(contextMenuSelection)]="selectedMove" 
-                                                [contextMenu]="movecm" [tableStyle]="{ 'min-width': '9rem' }">
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th>&nbsp;</th>
-                                        <th>White</th>
-                                        <th>Black</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" ngFor let-move [ngForOf]="moves">
-                                    <tr>
-                                        <td>{{move.turn}}.</td>
-                                        <td [style]="calcMoveStyle(move,0)" (click)="selectMove(move,0)" 
-                                                    [pContextMenuRow]="{'move': move, 'color': 0, 'index': move.turn-1 }">{{move.whiteMove}}</td>
-                                        <td [style]="calcMoveStyle(move,1)" (click)="selectMove(move,1)" 
-                                                    [pContextMenuRow]="{'move': move, 'color': 1, 'index': move.turn-1 }">{{move.blackMove}}</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>      
-                        </div>
-                    </div>
-                    <div class="movebox border-1 border-round-lg" style="width: auto; white-space: nowrap;"> <!-- *ngIf="showVariations">  --> 
-                        <div class="m-1" style="width: auto;">
-                            <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="variations" [tableStyle]="{ 'min-width': '20rem' }">
-                                <ng-template pTemplate="header">
-                                    <tr>
-                                        <th>Variations</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" ngFor let-variation [ngForOf]="variations">
-                                    <tr>
-                                        <td (click)="selectVariation(variation)" [style]="variationVisible(variation)">{{variation.value}}</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>      
-                        </div>
-                    </div>
-                </p-tabPanel>
-
-                <p-tabPanel header="Game Notes">
-                    Game Notes
-                </p-tabPanel>
-
-                <p-tabPanel header="Save and Updates">
-                    <div class="databox flex m-1">
-                        <div class="w-100 border-1 border-round-lg p-3 m-3" *ngIf="game" style="z-index: 100;"> <!-- *ngIf="doingSave === true && game" -->
-                            <h3 class="new-title"> {{saveOrUpdate}} Game </h3>
-                            <div class="p-2">
-                                <label for="white">White:</label>
-                                <input type="text" #white pInputText id="white" [(ngModel)]="game.white"/> {{game.whiteELO}}
-                            </div>
-                            <div class="p-2">
-                                <label for="black">Black:</label>
-                                <input type="text" pInputText id="black" [(ngModel)]="game.black"/> {{game.blackELO}}
-                            </div>
-                            <div class="p-2">
-                                <label for="result">Result:</label>
-                                <input type="text" pInputText id="result" [(ngModel)]="game.result"/>
-                            </div>
-                            <div class="p-2">
-                                <label for="site">Site:</label>
-                                <input type="text" pInputText id="site" [(ngModel)]="game.site"/>
-                            </div>
-                            <div class="p-2">
-                                <label for="event">Event:</label>
-                                <input type="text" pInputText id="event" [(ngModel)]="game.event"/>
-                            </div>
-                            <div class="p-2">
-                                <label for="date">Date:</label>
-                                <input type="text" pInputText id="date" [(ngModel)]="game.date"/>
-                            </div>
-                            <div class="p-2">
-                                <label for="count">Move Count:</label>
-                                <input type="text" pInputText id="count" [(ngModel)]="game.moveCount"/>
-                            </div>
-                            <div class="p-2">
-                                <textarea rows="15" cols="80" pInputTextarea  [(ngModel)]="game.moves"></textarea>
-                            </div>
-                            <div class="p-2">
-                                <p-button (click)="saveGame()" *ngIf="game.id.length === 0">Save</p-button>&nbsp;
-                                <p-button severity="success" (click)="updateGame()" *ngIf="game.id.length > 0">Update</p-button>&nbsp;
-                                <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
-                                <p-button severity="info" (click)="load()">Load Moves</p-button>&nbsp;
+                <p-tabpanels>
+                    <p-tabpanel [value]="0">
+                        <div class="movebox border-1 border-round-lg">
+                            <div class="mt-1">
+                                <p-contextMenu #movecm [model]="gameItems" [baseZIndex]="1000"/>
+                                <p-table id="notation" [scrollable]="true" scrollHeight="820px" [value]="moves" [(contextMenuSelection)]="selectedMove" 
+                                                    [contextMenu]="movecm" [tableStyle]="{ 'min-width': '9rem' }">
+                                    <ng-template #header>
+                                        <tr>
+                                            <th>&nbsp;</th>
+                                            <th>White</th>
+                                            <th>Black</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template #body let-move>
+                                        <tr>
+                                            <td>{{move.turn}}.</td>
+                                            <td [style]="calcMoveStyle(move,0)" (click)="selectMove(move,0)" 
+                                                        [pContextMenuRow]="{'move': move, 'color': 0, 'index': move.turn-1 }">{{move.whiteMove}}</td>
+                                            <td [style]="calcMoveStyle(move,1)" (click)="selectMove(move,1)" 
+                                                        [pContextMenuRow]="{'move': move, 'color': 1, 'index': move.turn-1 }">{{move.blackMove}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>      
                             </div>
                         </div>
-                    </div>
-                </p-tabPanel>
+                        <div class="movebox border-1 border-round-lg ml-1" style="width: auto;  max-width: 54rem; white-space: nowrap;">
+                            <div class="m-1" style="width: auto; max-width: 54rem;">
+                                <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
+                                <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="variations" [(contextMenuSelection)]="selectedVariation" 
+                                                         [contextMenu]="variationcm" [tableStyle]="{ 'max-width': '54rem', 'overflow-x': 'hidden' }">
+                                    <ng-template #header>
+                                        <tr>
+                                            <th>Variations</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template #body let-variation>
+                                        <tr>
+                                            <td (click)="selectVariation(variation)" [style]="variationVisible(variation)"
+                                                    [pContextMenuRow]="{'index': variation.index }">{{variation.value}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>      
+                            </div>
+                        </div>
+                    </p-tabpanel>
 
-                <p-tabPanel header="Game Review">
-                    Game Review
-                </p-tabPanel>
-            </p-tabView>
+                    <p-tabpanel [value]="1">
+                        <notebox [game]="game"></notebox>
+                    </p-tabpanel>
+
+                    <p-tabpanel [value]="2">
+                        <updatebox [game]="game" [title]="saveOrUpdate" (preloadEvent)="preloadGame($event)" (cancelEvent)="changeTab($event)"></updatebox>
+                    </p-tabpanel>
+
+                    <p-tabpanel [value]="3">
+                        <analysisbox [game]="game" (variationEvent)="makeVariation($event)"/>
+                    </p-tabpanel>
+                </p-tabpanels>
+            </p-tabs>
         </div>
 
         <div class="toolbox border-1 border-round-lg">

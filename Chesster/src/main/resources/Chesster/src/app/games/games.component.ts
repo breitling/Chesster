@@ -1,27 +1,28 @@
 import { Component, ElementRef, OnInit, ViewChild, signal } from '@angular/core';
-import { DataService } from '../Services/DataService.service';
-import { Database } from '../Models/Database';
+
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { Game } from '../Models/Game';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { MessagesModule } from 'primeng/messages';
 import { Message } from 'primeng/message';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { ChessPositionComponent } from "../chessposition/chessposition.component";
 import { PanelModule } from 'primeng/panel';
+
+import { ChessPositionComponent } from "../chessposition/chessposition.component";
+import { DataService } from '../Services/DataService.service';
+import { Database } from '../Models/Database';
 
 @Component({
     selector: 'app-games',
-    imports: [CommonModule, ButtonModule, TableModule, FormsModule, MessagesModule, InputTextModule, TextareaModule, ChessPositionComponent, PanelModule],
+    standalone: true,
+    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,
+              ChessPositionComponent,PanelModule],
     templateUrl: './games.component.html',
     styleUrl: './games.component.scss'
 })
 export class GamesComponent implements OnInit {
-
-    public activeIndex: number = 1;
 
     public database : Database;
     public games : Game [];
@@ -55,7 +56,6 @@ export class GamesComponent implements OnInit {
     }
 
     public onRowSelect(event: any) {
-        this.activeIndex = 0;
         this.dataService.setSelectedGame(this.selectedGame);
         this.dataService.unsetPreload();
     }
@@ -63,7 +63,6 @@ export class GamesComponent implements OnInit {
     public onRowUnselect(event: any) {
         this.dataService.setSelectedGame(this.selectedGame); //NOTE: this.selectedGame is nothing
         this.chessPositionBoard = this.dataService.getChessPositionBoard();
-        this.activeIndex = 1;
     }
 
     public clear() {
@@ -78,7 +77,7 @@ export class GamesComponent implements OnInit {
         if (this.database && this.board) {
             const fen = this.board.fen();
 
-            this.dataService.log(fen);
+            console.log(fen);
             this.dataService.setChessPositionBoard(fen);
 
             this.dataService.findGames(this.database.id, fen).then(
@@ -87,15 +86,16 @@ export class GamesComponent implements OnInit {
                     this.dataService.setCurrentGames(data);
                 },
                 (error : string) => {
-                    this.dataService.log(error);
+                    console.log(error);
                 }
             );
         }
     }
 
     public load() {
+        console.log('Setting preload...');
         this.dataService.setPreload(this.selectedGame);
-        this.dataService.log('Setting preload...');
+        this.messages.set([{ severity : 'success', text: 'Game preloaded.'}]);
     }
 
     public start() {
@@ -106,12 +106,24 @@ export class GamesComponent implements OnInit {
     public update() {
         this.dataService.updateGame(this.database.id, this.selectedGame).then(
             (results) => {
-                this.messages.set([{ severity : 'success', detail: 'Sucessfully updated game.'}]);
+                this.messages.set([{ severity : 'success', text: 'Sucessfully updated game.'}]);
             },
             (error : string) => {
-                this.messages.set([{ severity : 'error', detail: 'Failed to update game.'}]);
+                this.messages.set([{ severity : 'error', text: 'Failed to update game.'}]);
             }
         );
+    }
+
+    public delete() {
+        const b = this.dataService.deleteGame(this.database.id, this.selectedGame.id);
+
+        if (b) {
+            this.onRowUnselect(null);
+            this.getData();
+            this.messages.set([{ severity : 'success', text: 'Sucessfully deleted game.'}]);
+        } else {
+            this.messages.set([{ severity : 'error', text: 'Error deleting game.'}]);
+        }
     }
 
 //  PRIVATE METHODS
@@ -123,7 +135,7 @@ export class GamesComponent implements OnInit {
                 this.dataService.setCurrentGames(data);
             },
             (error : string) => {
-                this.dataService.log(error);
+                console.log(error);
             } 
         );
     }

@@ -1,0 +1,94 @@
+/* Captured Pieces */
+
+.captured-pieces-cpiece {
+    display:            inline-block;
+    background-image:   url("/assets/captured-pieces.png");
+    background-repeat:  no-repeat;
+    background-size:    34.2rem 30.6rem;
+    margin-right:       .1rem;
+}
+
+/* Pawns */
+
+.captured-pieces-b-pawn, .captured-pieces-w-pawn {height: 1.7rem; width: 1.3rem;}
+
+.captured-pieces-b-pawn{background-position:0 -17.6rem;}
+.captured-pieces-w-pawn{background-position:-18rem -17.7rem; color: black;}
+
+.captured-pieces-b-2-pawns, .captured-pieces-w-2-pawns {height: 1.7rem; width: 2rem;}
+
+.captured-pieces-b-2-pawns{background-position:0 -15.1rem;}
+.captured-pieces-w-2-pawns{background-position:-18rem -15.2rem;}
+
+.captured-pieces-b-3-pawns, .captured-pieces-w-3-pawns{height:1.7rem; width:2.7rem;}
+
+.captured-pieces-b-3-pawns{background-position:0 -12.6rem}
+.captured-pieces-w-3-pawns{background-position:-18rem -12.7rem}
+
+.captured-pieces-b-4-pawns, .captured-pieces-w-4-pawns{height:1.7rem; width:3.4rem;}
+
+.captured-pieces-b-4-pawns{background-position:0 -10.1rem;}
+.captured-pieces-w-4-pawns{background-position:-18rem -10.2rem;}
+
+.captured-pieces-b-5-pawns, .captured-pieces-w-5-pawns{height:1.7rem; width:4.1rem;}
+
+.captured-pieces-b-5-pawns{background-position:0 -7.6rem;}
+.captured-pieces-w-5-pawns{background-position:-18rem -7.7rem;}
+
+.captured-pieces-b-6-pawns, .captured-pieces-w-6-pawns{height:1.7rem;width:4.8rem;}
+
+.captured-pieces-b-6-pawns{background-position:0 -5.1rem;}
+.captured-pieces-w-6-pawns{background-position:-18rem -5.2rem;}
+
+.captured-pieces-b-7-pawns, .captured-pieces-w-7-pawns{height:1.7rem;width:5.5rem;}
+
+.captured-pieces-b-7-pawns{background-position:0 -2.6rem;}
+.captured-pieces-w-7-pawns{background-position:-18rem -2.7rem;}
+
+.captured-pieces-b-8-pawns,.captured-pieces-w-8-pawns{height:1.7rem; width:6.2rem;}
+
+.captured-pieces-b-8-pawns{background-position:0 -.1rem;}
+.captured-pieces-w-8-pawns{background-position:-18rem -.2rem;}
+
+/* Bishops */
+
+.captured-pieces-b-bishop, .captured-pieces-w-bishop{height:1.9rem;width:1.5rem;}
+
+.captured-pieces-b-bishop{background-position:-6.7rem -2.4rem;}
+.captured-pieces-w-bishop{background-position:-24.7rem -2.4rem;}
+
+.captured-pieces-b-2-bishops, .captured-pieces-w-2-bishops{height:1.9rem; width:2.3rem;}
+
+.captured-pieces-b-2-bishops{background-position:-6.7rem .1rem;}
+.captured-pieces-w-2-bishops{background-position:-24.7rem .1rem;}
+
+/* Knights */
+
+.captured-pieces-b-knight, .captured-pieces-w-knight{height:1.9rem;width:1.6rem;}
+
+.captured-pieces-b-knight{background-position:-9.5rem -2.4rem;}
+.captured-pieces-w-knight{background-position:-27.5rem -2.4rem;}
+
+.captured-pieces-b-2-knights, .captured-pieces-w-2-knights{height:1.9rem;width:2.3rem;}
+
+.captured-pieces-b-2-knights{background-position:-9.5rem .1rem;}
+.captured-pieces-w-2-knights{background-position:-27.5rem .1rem;}
+
+/* Rooks */
+
+.captured-pieces-b-rook, .captured-pieces-w-rook{height:1.7rem;width:1.5rem;}
+
+.captured-pieces-b-rook{background-position:-12.1rem -2.6rem;}
+.captured-pieces-w-rook{background-position:-30.1rem -2.7rem;}
+
+.captured-pieces-b-2-rooks, .captured-pieces-w-2-rooks{height:1.7rem;width:2.3rem;}
+
+.captured-pieces-b-2-rooks{background-position:-12rem -.1rem;}
+.captured-pieces-w-2-rooks{background-position:-30rem -.2rem;}
+
+/* Queen */
+
+.captured-pieces-b-queen, .captured-pieces-w-queen{height:1.9rem;width:1.8rem;}
+
+.captured-pieces-b-queen{background-position:-14.5rem .1rem;}
+.captured-pieces-w-queen{background-position:-32.5rem .1rem;}

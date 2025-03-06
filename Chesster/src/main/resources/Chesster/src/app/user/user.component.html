@@ -1,6 +1,6 @@
 <div class="main flex flex-row">
-    <div class="box m-1" style="z-index: 100;">
-        <div class="block m-5">
+    <div class="box" style="z-index: 100;">
+        <div class="block m-2">
             <h3>Hero Information:</h3>
         </div>
         <div class="block m-1">
@@ -10,10 +10,12 @@
             </div>
         </div>
         <div class="card m-5">
-            <p-messages [(value)]="messages" [enableService]="false" [closable]="true"></p-messages>
+            @for (message of messages(); track message; ) {
+                <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+            }
         </div>
     </div>
-    <div class="databox flex  border-1 border-round-lg m-1">
+    <div class="databox flex border-1 border-round-lg m-1">
         <div class="w-100 m-5" *ngIf="account.length > 0" style="z-index: 100;">
             <h3 class="new-title"> Import Games From Chess.com </h3>
             <div class="p-2">
@@ -26,26 +28,27 @@
             </div>
             <div class="p-2">
                 <label for="notes">Time Class:</label>
-                <p-dropdown [options]="timeClasses" [(ngModel)]="timeClass" optionLabel="class" placeholder="Select a Time Class"></p-dropdown>
+                <p-select [style]="{ 'width': '20rem' }" [options]="timeClasses" [(ngModel)]="timeClass" optionLabel="class" placeholder="Select a Time Class"></p-select>
             </div>
             <div class="p-2">
                 <p-button severity="success" (click)="getGames()">Get Games</p-button>
             </div>
 
-            <div class="flex border-1 border-round-lg m-2" *ngIf="games.length > 0">
+            <div class="flex border-1 border-round-lg m-2 gamebox" *ngIf="games.length > 0">
                 <div class="p-2">
                     <p-table id="cdcgames" [value]="games" [scrollable]="true" scrollHeight="550px" selectionMode="multiple" [(selection)]="selectedGames" 
-                                dataKey="tcn" [tableStyle]="{'min-width': '50rem'}">
-                        <ng-template pTemplate="header">
+                                dataKey="tcn" [tableStyle]="{ 'min-width': '50rem', 'overflow-x': 'hidden' }">
+                        <ng-template #header>
                             <tr>
                                 <th></th>
                                 <th>White</th>
                                 <th>Black</th>
                                 <th>Class</th>
                                 <th>Result</th>
+                                <th></th>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="body" let-game>
+                        <ng-template #body let-game>
                             <tr>
                                 <td>
                                     <p-tableCheckbox [value]="game"/>
@@ -54,6 +57,7 @@
                                 <td>{{game.black.username}}</td>
                                 <td>{{game.time_class}}</td>
                                 <td>{{game.result}}</td>
+                                <td><p-button (click)="displayGame($event, game)" icon="pi pi-info-circle" [text]="true"></p-button></td>
                             </tr>
                         </ng-template>
                     </p-table>
@@ -71,3 +75,22 @@
         </div>
     </div>
 </div>
+
+<p-popover #po (onHide)="selectedGame = null">
+    <ng-template #content>
+        <div class="popoverbox p-2">
+            <div class="flex flex-row justify-between items-start gap-1 mb-2">
+                <b>White:</b> {{selectedGame.white.username}} ({{selectedGame.white.rating}}) vs. <b>Black:</b> {{selectedGame.black.username}} ({{selectedGame.black.rating}})
+            </div>
+            <div class="flex flex-row justify-between items-start gap-1 mb-2">
+                <b>White:</b> {{selectedGame.white.result}} / <b>Black:</b> {{selectedGame.black.result}}
+            </div>
+            <div class="flex flex-row justify-between items-start gap-1 mb-2">
+                <b>{{opening(selectedGame.eco)}}</b>
+            </div>
+            <div class="flex flex-row justify-between items-start gap-1 mb-2">
+                {{moves(selectedGame.pgn)}}
+            </div>
+        </div>
+    </ng-template>
+</p-popover>

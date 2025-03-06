@@ -21,6 +21,11 @@ public class Move implements Comparable<Move>
         this.pv = pv;
         this.continuation = continuation;
     }
+    
+    public static Move create() 
+    {
+    	return new Move("", 0, null, 0, new String[0]);
+    }
 
     public String getLan() {
         return lan;

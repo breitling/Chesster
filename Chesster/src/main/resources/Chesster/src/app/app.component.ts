@@ -12,7 +12,8 @@ import { DataService } from './Services/DataService.service';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, SidebarComponent, MenubarModule, DialogModule, ButtonModule],
+    standalone: true,
+    imports: [ButtonModule, SidebarComponent, MenubarModule, DialogModule, RouterOutlet],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
     providers: [DataService]
@@ -23,7 +24,7 @@ export class AppComponent implements OnInit {
     items: MenuItem[] | undefined;
     visible: boolean = false;
 
-    constructor(private primeng: PrimeNG, private router: Router, private dataService : DataService) {
+    constructor(private primeng: PrimeNG, private dataService : DataService) {
         //@ts-ignore
         dataService.setJavaConnector(window['getJavaConnector']);
     }

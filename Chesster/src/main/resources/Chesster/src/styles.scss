@@ -1,12 +1,14 @@
 /*
 @import "primeng/resources/primeng.css";
+*/
 @import "primeflex/primeflex.css";
 @import "primeicons/primeicons.css";
-*/
 
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @import "chessboardjs/www/css/chessboard.css";
+
+@import "../src/app/chess.css";
 
 body {
     width: 99%;
@@ -61,8 +63,9 @@ body {
     font-weight: bold;
 }
 
-#notation .p-datatable-thead tr:first-child > th:nth-child(1) { width:  30px; }
-#notation .p-datatable-tbody tr:first-child > td:nth-child(1) { color: #21610B; }
+#notation .p-datatable-thead tr:first-child > th:nth-child(1) { width:  30px; color: #d1150e;}
+#notation .p-datatable-thead tr:first-child > th:nth-child(2) { color: #d1150e;}
+#notation .p-datatable-thead tr:first-child > th:nth-child(3) { color: #d1150e;}
 
 /* Chess variations table */
 
@@ -82,8 +85,7 @@ body {
     font-weight: bold;
 }
 
-#variations .p-datatable-thead tr:first-child > th:nth-child(1) { width: 3rem; }
-#variations .p-datatable-tbody tr:first-child > td:nth-child(1) { color: #21610B; }
+#variations .p-datatable-thead tr:first-child > th:nth-child(1) { width: 30rem; color: #d1150e; }
 
 /* Promotion Box */
 
@@ -140,7 +142,7 @@ body {
 #games .p-datatable-thead tr:first-child > th:nth-child(3) { width:  3rem; }
 #games .p-datatable-thead tr:first-child > th:nth-child(4) { width:  3rem; }
 
-/* Games table */
+/*  Chess.com Games table */
 
 #cdcgames .p-datatable-thead > tr > th {
     border: 1px solid black;
@@ -153,17 +155,42 @@ body {
 }
 
 #cdcgames .p-datatable-tbody > tr > td {
+    font-size: medium;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+    padding: 0px;
+}
+
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(1) { width:  2rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(2) { width:  14rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(3) { width:  14rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(4) { width:  3rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(5) { width:  5rem; }
+#cdcgames .p-datatable-thead tr:first-child > th:nth-child(6) { width:  1rem; }
+
+/* Review Analysis table */
+
+#review .p-datatable-thead > tr > th {
+    border: 1px solid black;
+    background-color: rgb(225, 228, 60);
+    padding: 2px;
+    font-size: small;
+    font-weight: bolder;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#review .p-datatable-tbody > tr > td {
     padding: 2px;
     font-size: medium;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     text-align: left;
 }
 
-#cdcgames .p-datatable-thead tr:first-child > th:nth-child(1) { width:  2rem; }
-#cdcgames .p-datatable-thead tr:first-child > th:nth-child(2) { width:  12rem; }
-#cdcgames .p-datatable-thead tr:first-child > th:nth-child(3) { width:  12rem; }
-#cdcgames .p-datatable-thead tr:first-child > th:nth-child(4) { width:  4rem; }
-#cdcgames .p-datatable-thead tr:first-child > th:nth-child(4) { width:  6rem; }
+#review .p-datatable-thead tr:first-child > th:nth-child(1) { width:  0.75rem; }
+#review .p-datatable-thead tr:first-child > th:nth-child(2) { width:  3rem; }
+#review .p-datatable-thead tr:first-child > th:nth-child(3) { width:  3rem; }
+#review .p-datatable-thead tr:first-child > th:nth-child(4) { width:  18rem; }
 
 /* Chess Boards Colors */
 
@@ -172,17 +199,43 @@ body {
 
 /* Chess Board Tabs */
 
-.p-tabview-nav > .p-highlight {
-    border: 1px solid black;
-    border-radius: 6px;
+.p-tab {
+    gap: 80px !important;
+    margin: 2px !important;
 }
 
-.p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    border: 3px solid black;
-    background-color: rgb(208, 217, 219);
-    padding: 0.5rem;
+.p-tab-active {
+    color: rgb(34, 0, 78) !important;
+    background-color: rgb(229, 255, 232) !important;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid gray !important;
 }
 
-.p-tabview .p-tabview-title {
-    background-color: rgb(208, 217, 219);
+/* vertical scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+    width: 7px;
+    z-index: 200;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background:  #020530;
+}
+  
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #303df0;
+}
+
+::-webkit-scrollbar:horizontal {
+    display: none;
+    background-color:#c7125a;
 }

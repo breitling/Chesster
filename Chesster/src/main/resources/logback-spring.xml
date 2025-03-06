@@ -9,7 +9,8 @@
     <logger name="org.springframework" level="info"/>
     <logger name="com.breitling.chesster" level="debug"/>
     <logger name="com.breitling.jclib" level="debug"/>
-    
+    <logger name="com.breitling.chesster.service.GameReviewServiceImpl" level="debug"/>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>

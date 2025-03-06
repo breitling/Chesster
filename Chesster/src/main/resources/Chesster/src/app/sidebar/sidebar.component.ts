@@ -6,7 +6,8 @@ import { Router, RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-sidebar',
-    imports: [RouterModule, TooltipModule],
+    standalone: true,
+    imports: [RouterModule,TooltipModule],
     templateUrl: './sidebar.component.html',
     styleUrl: './sidebar.component.scss',
     providers: [DataService]
@@ -15,5 +16,4 @@ export class SidebarComponent {
 
     constructor(private router: Router, private dataService : DataService) {
     }
-
 }

@@ -16,6 +16,7 @@ public class Game
 	private String rules;
 	private Player white;
 	private Player black;
+	private String eco;
 	
 	public String getUrl() {
 		return url;
@@ -127,5 +128,13 @@ public class Game
 	
 	public void setBlack(Player black) {
 		this.black = black;
+	}
+
+	public String getEco() {
+		return eco;
+	}
+
+	public void setEco(String eco) {
+		this.eco = eco;
 	}
 }

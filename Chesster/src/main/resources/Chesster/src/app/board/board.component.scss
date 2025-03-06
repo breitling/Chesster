@@ -9,7 +9,7 @@
 }
 
 .databox {
-    width: 56%;
+    width: 90%;
     height: 100%;
 }
 
@@ -36,7 +36,7 @@
 
 .enginebox {
     width: 532px;
-    height: 304px;
+    height: auto; /*304px;*/
 }
 
 .topturn {
@@ -64,11 +64,13 @@
 }
 
 .toolbox {
-    width: 99%; /* 718px; */
+    width: 95%;
     height: 66px;
     padding: 10px 2px 10px 2px;
     margin-top: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 24px;
+    position: fixed;
+    bottom: 0;
 }
 
 .scorearea {
@@ -92,6 +94,12 @@ h3 {
     margin-block-end: 1px !important;
 }
 
+hr {
+    width: 78rem;
+    color: white;
+    background-color:white;
+}
+
 .new-title {
     background-color: rgb(77, 199, 77);
     width: 100%;
@@ -99,7 +107,7 @@ h3 {
 
 label {
     display: inline-block;
-    width: 5rem;
+    width: 7rem;
     margin: 2px;
     padding: 5px;
     font-weight: bold;
@@ -110,4 +118,8 @@ input {
     margin: 2px;
     padding: 5px;
     width: 30rem;
+}
+
+.w-100 {
+    width: 100%;
 }

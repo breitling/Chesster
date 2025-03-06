@@ -18,8 +18,9 @@ import { Message, MessageModule } from 'primeng/message';
 
 @Component({
     selector: 'app-databases',
+    standalone: true,
     imports: [CommonModule, ButtonModule, TableModule, InputTextModule, TextareaModule, FormsModule, AutoFocusModule, TooltipModule,
-        FileUploadModule, FileselectionComponent, DialogModule, MessageModule],
+              FileUploadModule, FileselectionComponent, DialogModule, MessageModule],
     providers: [],
     templateUrl: './databases.component.html',
     styleUrl: './databases.component.scss'
@@ -120,16 +121,16 @@ export class DatabasesComponent implements OnInit {
         if (b)
             this.messages.set([{ severity : 'success', text: 'Sucessfully deleted database.'}]);
         else
-            this.messages.set([{ severity : 'error', detail: 'Error deleting database.'}]);
+            this.messages.set([{ severity : 'error', text: 'Error deleting database.'}]);
     }
     
     public import() {
         this.dataService.import(this.id).then(
             (results) => {
-                this.messages.set([{ severity : 'success', detail: 'Sucessfully imported games.'}]);
+                this.messages.set([{ severity : 'success', text: 'Sucessfully imported games.'}]);
             },
             (error : string) => {
-                this.messages.set([{ severity : 'error', detail: error}]);
+                this.messages.set([{ severity : 'error', text: error}]);
             }
         );
     }
@@ -138,7 +139,7 @@ export class DatabasesComponent implements OnInit {
         const message = this.dataService.saveDatabase(this.name, this.path, this.notes);
         const severity = (message.indexOf('Failed') > 0) ? 'error' : 'success';
 
-        this.messages.set([{ severity : severity, detail: message}]);
+        this.messages.set([{ severity : severity, text: message}]);
     }
 
     public saveAndImport() {

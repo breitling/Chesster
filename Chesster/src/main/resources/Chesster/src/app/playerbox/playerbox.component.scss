@@ -1,5 +1,14 @@
 .box {
-    display: inline;
-    width: 340px;
+    position: relative;
+    width: 500px;
+    background-color: whitesmoke;
 }
 
+.captured {
+    padding-left: 30px;
+    justify-content: right;
+}
+
+.captured span {
+    background-color: whitesmoke;
+}

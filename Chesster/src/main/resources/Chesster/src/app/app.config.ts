@@ -13,12 +13,19 @@ export const appConfig: ApplicationConfig = {
         provideAnimationsAsync(), 
         providePrimeNG({
             theme: {
-            preset: Aura,
-            options: {
-                prefix: 'p',
-                darkModeSelector: 'system',
-                cssLayer: false
+                preset: Aura,
+                options: {
+                    prefix: 'p',
+                    darkModeSelector: 'false',
+                    cssLayer: false
+                }
+            },
+            zIndex: {
+                modal: 1100,    // dialog, sidebar
+                overlay: 1000,  // dropdown, overlaypanel
+                menu: 2000,     // overlay menus
+                tooltip: 1100,  // tooltip
             }
-        }})
+        })
     ],
 };

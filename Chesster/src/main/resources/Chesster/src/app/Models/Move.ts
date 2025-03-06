@@ -11,3 +11,10 @@ export interface Move {
     depth : number;
     continuation : string [];
 }
+
+export interface Analysis {
+    number: number;
+    fen: string;
+    move: string;
+    bestMove: Move;
+}

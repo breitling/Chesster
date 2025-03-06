@@ -3,6 +3,8 @@ package com.breitling.chesster.connector;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,9 +15,11 @@ import org.springframework.stereotype.Component;
 
 import com.breitling.chesster.service.ChessDotComService;
 import com.breitling.chesster.service.DirectoryService;
+import com.breitling.chesster.service.GameReviewService;
 import com.breitling.chesster.uci.UCI;
 import com.breitling.jclib.model.Database;
 import com.breitling.jclib.model.Game;
+import com.breitling.jclib.model.Note;
 import com.breitling.jclib.util.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -44,6 +48,9 @@ public class JavaConnector
     
     @Autowired
     private ChessDotComService cdcservice;
+    
+    @Autowired
+    private GameReviewService grservice;
     
 //  JCL SERVICES
     
@@ -74,7 +81,7 @@ public class JavaConnector
     	{
 			try 
 			{
-		    	UCI uci = new UCI();
+		    	UCI uci = UCI.create();
 		    	
 		    	uci.start(path);
 				uci.setOption("Threads", "12");
@@ -149,6 +156,10 @@ public class JavaConnector
 		}
     	
     	return json;
+    }
+    
+    public Boolean deleteGame(String id, String gid) {
+    	return gameService.deleteGame(id, gid);
     }
     
     public String findGames(String id, String fen)
@@ -231,21 +242,16 @@ public class JavaConnector
         System.exit(value);
     }
     
-    public void logIt(String... parts)
+    public void logIt(Object o)
     {
     	LocalDateTime now = LocalDateTime.now();
     	StringBuilder sb = new StringBuilder();
     	
-    	if (parts != null)
-    	{
-	    	for (String p : parts)
-	    		sb.append(p).append(" ");
-    	}
+    	if (o instanceof String)
+    		sb.append(o).append(" ");
     	else
-    	{
-    		sb.append("null");
-    	}
-    	
+    		sb.append(o.toString()).append(" ");
+ 
         LOG.debug("LOG: {} - {}", now.format(formatter), sb.toString());
     }
     
@@ -264,8 +270,6 @@ public class JavaConnector
     
     public String updateDatabase(String id, String name, String path, String notes)
     {
-    	consoleLog("Got Here");
-    	
     	String rc = "Failed";
     	boolean b = databaseService.updateDatabase(Database.create(id, name, path, notes));
     	
@@ -322,5 +326,124 @@ public class JavaConnector
     	}
     		
     	return "[]";
+    }
+    
+    public int reviewGame(String enginePath, int depth, int progress, String json) 
+    {
+    	try
+    	{
+    		if (progress == 0)
+    		{
+    			Game g = mapper.readValue(json, Game.class);
+    			progress = grservice.startReview(enginePath, g, depth);
+    		}
+    		else
+    		{
+    			progress = grservice.isRunning();
+    		}
+    	}
+    	catch (Exception e)
+    	{
+    		LOG.error(e.getMessage());
+    	}
+    	
+//    	System.out.println(progress);
+    	
+    	return progress;
+    }
+    
+    public String getReviewAnalysis() 
+    {
+    	try
+    	{
+    		var a = grservice.getReviewAnalysis();
+    		String data = mapper.writeValueAsString(a);
+//   		System.out.println(data);
+    		return data;
+    	} 
+    	catch (Exception e)
+    	{
+    		LOG.error(e.getMessage());
+    	}
+    		
+    	return "[]";
+    }
+    
+    public String abortReview() 
+    {
+    	String rc = "Error aborting review";
+    	
+    	try
+    	{
+	    	if (grservice.isRunning() > 0)
+	    	{
+	    		if (grservice.abortReview())
+	    			rc = "Aborted";
+	    	}
+    	}
+    	catch(Exception e)
+    	{
+    		LOG.error(e.getMessage());
+    	}
+    	
+    	return rc;
+    }
+    
+    public String doGC()
+    {
+    	System.gc();
+    	return "Done";
+    }
+    
+    public String getNotes(String id, String gameId)
+    {
+    	String json = "[ ]";
+    	Optional<List<Note>> list = gameService.getGameNotes(id, gameId);
+    	
+    	try 
+    	{
+    		if (list.isPresent())
+    			json = mapper.writeValueAsString(list.get());
+    	}
+    	catch (JsonProcessingException e) 
+		{
+			LOG.error(e.getMessage());
+		}
+    	
+    	return json;
+    }
+    
+    public Boolean saveNote(String id, String json)
+    {
+    	boolean rc = false;
+    	
+    	try 
+    	{
+			Note note = mapper.readValue(json, Note.class);
+			
+			if (note.getId().length() == 0)
+				rc = gameService.saveNote(id, note);
+			else
+				rc = gameService.updateNote(id, note);
+		}
+    	catch (JsonMappingException e) 
+    	{
+    		e.printStackTrace();
+		} 
+    	catch (JsonProcessingException e) 
+    	{
+			e.printStackTrace();
+		}
+    	
+    	return rc;
+    }
+    
+    public Boolean deleteNote(String id, String nid)
+    {
+    	boolean rc = false;
+    	
+    	rc = gameService.deleteNote(id, nid);
+    	
+    	return rc;
     }
 }

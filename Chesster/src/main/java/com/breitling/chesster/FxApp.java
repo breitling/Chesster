@@ -41,7 +41,7 @@ public class FxApp extends Application
 
 		Browser b = new Browser();
 		Scene scene = new Scene(b, 1400, 900, Color.web("#666970"));
-
+		
 		b.webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
 			if (Worker.State.SUCCEEDED == newValue) {
 				JSObject window = (JSObject) b.webEngine.executeScript("window");
@@ -49,8 +49,12 @@ public class FxApp extends Application
 				javascriptConnector = (JSObject) b.webEngine.executeScript("getJsConnector()");
 				javaConnector.setJavascriptConnector(javascriptConnector);
 			//  SETUP JAVASCRIPT CONSOLE TO SYSTEM.OUT, ETC
-	 			b.webEngine.executeScript("console.log = function(message) { javaConnector.log(message); };");
-	 			b.webEngine.executeScript("window.onerror = function(msg, url, line, col, error) { return javaConnector.onError(msg, url, line, col, error);};"); 
+	 			b.webEngine.executeScript("console.log = function(message) { javaConnector.logIt(message); };");
+	 			b.webEngine.executeScript("window.onerror = function(msg, url, line, col, error) { return javaConnector.onError(msg, url, line, col, error);};");
+	 		/*	
+	 			String cssLink = "<link rel='stylesheet' type='text/css' href='http://localhost:4444/custom.css'>";
+	 			b.webEngine.executeScript("document.head.innerHTML += \"" + cssLink + "\";");
+	 		*/	
 			}
 		});
 
@@ -66,7 +70,7 @@ public class FxApp extends Application
 		final WebEngine webEngine = browser.getEngine();
 
 		final String url = "http://localhost:4444/index.html";
-		
+				
 		public Browser()
 		{
 		//	browser.setContextMenuEnabled(false);

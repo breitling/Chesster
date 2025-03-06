@@ -1,0 +1,51 @@
+<h3 class="new-title"> {{title}} Game </h3>
+<div class="databox flex p-1">
+    <div class="flex-row border-1 border-round-lg p-2" *ngIf="game" style="z-index: 100;">
+        <div class="p-2">
+            <label for="white">White:</label>
+            <input type="text" #white pInputText id="white" [(ngModel)]="game.white"/> {{game.whiteELO}}
+        </div>
+        <div class="p-2">
+            <label for="black">Black:</label>
+            <input type="text" pInputText id="black" [(ngModel)]="game.black"/> {{game.blackELO}}
+        </div>
+        <div class="p-2">
+            <label for="result">Result:</label>
+            <input type="text" pInputText id="result" [(ngModel)]="game.result"/>
+        </div>
+        <div class="p-2">
+            <label for="site">Site:</label>
+            <input type="text" pInputText id="site" [(ngModel)]="game.site"/>
+        </div>
+        <div class="p-2">
+            <label for="event">Event:</label>
+            <input type="text" pInputText id="event" [(ngModel)]="game.event"/>
+        </div>
+        <div class="p-2">
+            <label for="date">Date:</label>
+            <input type="text" pInputText id="date" [(ngModel)]="game.date"/>
+        </div>
+        <div class="p-2">
+            <label for="count">Move Count:</label>
+            <input type="text" pInputText id="count" [(ngModel)]="game.moveCount"/>
+        </div>
+        <div class="p-2">
+            <textarea rows="15" cols="100" pInputTextarea  [(ngModel)]="game.moves"></textarea>
+        </div>
+        <div class="p-2">
+            <p-button (click)="saveGame()" *ngIf="game.id.length === 0">Save</p-button>&nbsp;
+            <p-button severity="success" (click)="updateGame()" *ngIf="game.id.length > 0">Update</p-button>&nbsp;
+            <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
+            <p-button severity="info" (click)="load()">Load Moves</p-button>&nbsp;
+        </div>
+    </div>
+    <div class="flex-row p-2" *ngIf="game === undefined">
+        No game selected.
+    </div>
+</div>
+
+<div class="flex flex-row m-2">
+    @for (message of messages(); track message; ) {
+        <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+    }
+</div>
