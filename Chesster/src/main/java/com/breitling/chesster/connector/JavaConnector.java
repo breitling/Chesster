@@ -458,7 +458,9 @@ public class JavaConnector
     	
 		try 
 		{
-			json = mapper.writeValueAsString(patternService.getPatterns());
+			var list = patternService.getPatterns();
+			list.sort((a,b) -> a.getTitle().compareToIgnoreCase(b.getTitle()));
+			json = mapper.writeValueAsString(list);
 		} 
 		catch (JsonProcessingException e) 
 		{
