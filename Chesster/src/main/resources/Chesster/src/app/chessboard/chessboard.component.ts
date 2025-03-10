@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { CommonModule, NgStyle } from '@angular/common';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
@@ -16,19 +16,19 @@ import { Variation } from '../Models/Variation';
 @Component({
     selector: 'ng2-chessboard',
     standalone: true,
-    imports: [CommonModule, ButtonModule],
+    imports: [CommonModule,ButtonModule,NgStyle],
     templateUrl: './chessboard.component.html',
     styleUrl: './chessboard.component.scss',
-    providers: [DialogService, DynamicDialogRef]
+    providers: [DialogService,DynamicDialogRef]
 })
-export class ChessboardComponent {
+export class ChessboardComponent implements OnInit, AfterViewInit {
 
     board: any;                     // the chess board
 
     gORv: Chess;                    // the game or the variation(s)(?)
 
     game: Chess;                    // the game
-    variations: Chess [] = [];       // the variations
+    variations: Chess [] = [];      // the variations
 
     ref: DynamicDialogRef | undefined;
 
@@ -42,6 +42,7 @@ export class ChessboardComponent {
     private _snapbackSpeed: any     = 500;
     private _snapSpeed:     any     = 100;
     private _sparePieces:   Boolean = false;
+    private _boardWidth:    string  = '500px';
 
     @Input() animation: Boolean = true;
     @Output() animationChange: EventEmitter<Boolean> = new EventEmitter<Boolean>();
@@ -51,11 +52,15 @@ export class ChessboardComponent {
         this.gORv = this.game;
     }
 
-    ngOnInit() {
+    ngOnInit() : void {
         this.load();
     }
 
-  // PARAMETERS
+    ngAfterViewInit() : void {
+        this.board.resize();        // make boardWidth work
+    }
+
+//  PARAMETERS
 
     @HostListener('window:resize', ['$event'])
     onResize(event: Event) {
@@ -143,6 +148,13 @@ export class ChessboardComponent {
         this.sparePiecesChange.emit(this._sparePieces);
     }
 
+    @Input()
+    set boardWidth(value: string) {
+        this._boardWidth = value;
+        if (this.board) 
+            this.board.resize();
+    }
+
     get position():      any     { return this._position;      }
     get orientation():   Boolean { return this._orientation;   }
     get showNotation():  Boolean { return this._showNotation;  }
@@ -153,9 +165,11 @@ export class ChessboardComponent {
     get snapbackSpeed(): any     { return this._snapbackSpeed; }
     get snapSpeed():     any     { return this._snapSpeed;     }
     get sparePieces():   Boolean { return this._sparePieces;   }
+    get boardWidth():    string  { return this._boardWidth;    }
 
     @Output() lastMove:            EventEmitter<string>  = new EventEmitter<string>();
     @Output() positionChange:      EventEmitter<any>     = new EventEmitter<any>();
+    @Output() boardWidthChange:    EventEmitter<string>  = new EventEmitter<string>();
     @Output() orientationChange:   EventEmitter<Boolean> = new EventEmitter<Boolean>();
     @Output() showNotationChange:  EventEmitter<Boolean> = new EventEmitter<Boolean>();
     @Output() draggableChange:     EventEmitter<Boolean> = new EventEmitter<Boolean>();

@@ -68,7 +68,7 @@ export class DatabasesComponent implements OnInit {
                 this.databases = data;
             },
             (error : string) => {
-                this.dataService.log(error);
+                console.log(error);
             }
         );
     }

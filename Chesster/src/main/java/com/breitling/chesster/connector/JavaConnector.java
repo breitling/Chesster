@@ -17,9 +17,11 @@ import com.breitling.chesster.service.ChessDotComService;
 import com.breitling.chesster.service.DirectoryService;
 import com.breitling.chesster.service.GameReviewService;
 import com.breitling.chesster.uci.UCI;
+import com.breitling.jclib.chess.BitBoard;
 import com.breitling.jclib.model.Database;
 import com.breitling.jclib.model.Game;
 import com.breitling.jclib.model.Note;
+import com.breitling.jclib.model.Pattern;
 import com.breitling.jclib.util.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -59,6 +61,9 @@ public class JavaConnector
     
     @Autowired
     private com.breitling.jclib.service.GameService gameService;
+    
+    @Autowired
+    private com.breitling.jclib.service.PatternService patternService;
     
 //  ERROR HANDLERS
     
@@ -445,5 +450,96 @@ public class JavaConnector
     	rc = gameService.deleteNote(id, nid);
     	
     	return rc;
+    }
+    
+    public String getPatterns()
+    {
+    	String json = "[ ]";
+    	
+		try 
+		{
+			json = mapper.writeValueAsString(patternService.getPatterns());
+		} 
+		catch (JsonProcessingException e) 
+		{
+			LOG.error(e.getMessage());
+		}
+    	
+    	return json;
+    }
+    
+    public String addPattern(String json) 
+    {
+    	String msg = "Failed to save pattern.";
+    	
+    	try
+    	{
+    		Pattern p = mapper.readValue(json, Pattern.class);
+    		
+    		p.setBitBoardHash(BitBoard.generateBitBoardHash(p.getFen()));
+    		
+    		var b = patternService.savePattern(p);
+    		
+    		if (b)
+    			msg = "Pattern saved.";
+    	}
+    	catch (JsonMappingException e) 
+    	{
+    		e.printStackTrace();
+		} 
+    	catch (JsonProcessingException e) 
+    	{
+			e.printStackTrace();
+		}
+    	
+    	return msg;
+    }
+    
+    public String updatePattern(String json) 
+    {
+    	String msg = "Failed to update pattern.";
+    	
+    	try
+    	{
+    		Pattern p = mapper.readValue(json, Pattern.class);
+    		
+    		p.setBitBoardHash(BitBoard.generateBitBoardHash(p.getFen()));
+    		
+    		var b = patternService.updatePattern(p);
+    		
+    		if (b)
+    			msg = "Pattern updated.";
+    	}
+    	catch (JsonMappingException e) 
+    	{
+    		e.printStackTrace();
+		} 
+    	catch (JsonProcessingException e) 
+    	{
+			e.printStackTrace();
+		}
+    	
+    	return msg;
+    }
+    
+    public String deletePattern(String id) 
+    {
+    	String msg = "Failed to delete pattern.";
+    	
+    	try
+    	{
+    		var b = patternService.deletePattern(id);
+    		
+    		if (b)
+    			msg = "Pattern deleted.";
+    		else
+    			LOG.debug("Failed to delete pattern: {}", id);
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    	
+    	return msg;
     }
 }

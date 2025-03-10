@@ -33,6 +33,10 @@ body {
     background-image: linear-gradient(#dfb5f7, #a300ee);
 }
 
+.p-panel-header {
+    padding: 0px !important;
+}
+
 /* Avatars */
 
 .p-avatar.p-avatar-image {
@@ -239,3 +243,24 @@ body {
     display: none;
     background-color:#c7125a;
 }
+
+/* Patterns table */
+
+#patterns .p-datatable-thead > tr > th {
+    border: 1px solid black;
+    background-color: rgb(220, 175, 255);
+    padding: 2px;
+    font-size: small;
+    font-weight: bolder;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#patterns .p-datatable-tbody > tr > td {
+    padding: 2px;
+    font-size: medium;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: left;
+}
+
+#patterns .p-datatable-thead tr:first-child > th:nth-child(1) { width:  30rem; }

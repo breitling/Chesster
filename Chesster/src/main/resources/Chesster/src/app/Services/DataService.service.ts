@@ -6,6 +6,7 @@ import { Database } from "../Models/Database";
 import { Game } from "../Models/Game";
 import { Variation } from "../Models/Variation";
 import { Note } from "../Models/Note";
+import { Pattern } from "../Models/Pattern";
 
 
 @Injectable({
@@ -293,7 +294,7 @@ export class DataService {
 
     public async saveNote(id: string, note : Note) : Promise<boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().saveNote(id,  JSON.stringify(note));
+            const b = this.javaConnector().saveNote(id, JSON.stringify(note));
 
             if (b)
                 resolve(true);
@@ -310,6 +311,53 @@ export class DataService {
                 resolve(true);
             else
                 reject('Failed to delete note.')
+        });
+    }
+
+    public async getPatterns() : Promise<Pattern []> {
+        return new Promise((resolve, reject) => {
+            const data = this.javaConnector().getPatterns();
+            const patterns : Pattern [] = JSON.parse(data);
+
+         // this.log(data);
+
+            if (patterns != null)
+                resolve(patterns);
+            else
+                reject('Failed to get patterns from backend.');
+        });
+    }
+
+    public async addPattern(pattern : Pattern) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const rc = this.javaConnector().addPattern(JSON.stringify(pattern));
+
+            if (rc != null)
+                resolve(rc);
+            else
+                reject('Failed to add pattern.');
+        });
+    }
+
+    public async updatePattern(pattern : Pattern) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const rc = this.javaConnector().updatePattern(JSON.stringify(pattern));
+
+            if (rc != null)
+                resolve(rc);
+            else
+                reject('Failed to update pattern.');
+        });
+    }
+
+    public async deletePattern(id : string) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const rc = this.javaConnector().deletePattern(id);
+
+            if (rc != null)
+                resolve(rc);
+            else
+                reject('Failed to delete pattern.');
         });
     }
 
@@ -336,6 +384,10 @@ export class DataService {
 
     createNote(gameid : string) : Note {
         return { id: '', gameId: gameid, note : '', created: new Date() };
+    }
+
+    createPattern() : Pattern {
+        return { id: '', title: '', bitBoardHash: 0, fen: '', turn: 'White', moves: '', notes: '', source: '', created: '' };
     }
 
 //  CHESS ENGINES

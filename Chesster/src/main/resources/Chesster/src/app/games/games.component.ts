@@ -17,8 +17,7 @@ import { Database } from '../Models/Database';
 @Component({
     selector: 'app-games',
     standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,
-              ChessPositionComponent,PanelModule],
+    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,ChessPositionComponent,PanelModule],
     templateUrl: './games.component.html',
     styleUrl: './games.component.scss'
 })
