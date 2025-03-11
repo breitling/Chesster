@@ -123,6 +123,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.tabindex = 0;
+        if (!this.database)
+            this.messages.set([{ severity : 'warn', text: 'No databse selected. Saves not available.'}]);
     }
 
     ngAfterViewInit() {
@@ -342,6 +344,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
             const f = this.board.startVariation(v.fen);
             this.board.position = f;
             this.tabindex = 0;
+            this.showVariations = true;
         } else {
             this.messages.set([{ severity : 'warn', text: 'Variation already exists'}]);
         }
@@ -357,6 +360,15 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 console.log('Failed to delete variation at ' + data.index);
             }
         }
+        
+        let count = 0;
+
+        for (var n = 0; n < this.variations.length; n++)
+            if (this.variations[n].index === 0)
+                count++;
+
+        if (count === this.variations.length)
+            this.showVariations = false;
     }
 
     public newVariation() {
@@ -375,6 +387,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
             this.variations[index] = v;
             this.currentVariation = v.index;
+            this.showVariations = true;
 
             const f = this.board.startVariation(v.fen);
             this.board.position = f;
@@ -602,7 +615,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public getFen() : string {
-        if (this.moves.length > 0) 
+        if (this.moves.length > 0)
             return this.board.position;
         else
             return this.position;

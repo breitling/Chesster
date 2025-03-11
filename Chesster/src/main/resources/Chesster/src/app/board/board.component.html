@@ -59,7 +59,7 @@
                                 </p-table>      
                             </div>
                         </div>
-                        <div class="movebox border-1 border-round-lg ml-1" style="width: auto;  max-width: 54rem; white-space: nowrap;">
+                        <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
                             <div class="m-1" style="width: auto; max-width: 54rem;">
                                 <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
                                 <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="variations" [(contextMenuSelection)]="selectedVariation" 
