@@ -71,6 +71,8 @@ export class PatternsComponent implements OnInit {
 //  CALLBACKS
 
     public onRowSelect(event:any) {
+        this.orientation = true;
+        this.board2.orientation = this.orientation;
     }
 
     public onRowUnselect(event:any) {
@@ -98,14 +100,18 @@ export class PatternsComponent implements OnInit {
         if (b) this.selectedPattern = undefined;
     }
 
-    public clear() {
-        if (this.board1)
+    public clear(n : number) {
+        if (n === 1)
             this.board1.clear();
+        else
+            this.board3.clear();
     }
 
-    public start() {
-        if (this.board1)
+    public start(n : number) {
+        if (n === 1)
             this.board1.start();
+        else
+            this.board3.start();
     }
 
     public addPattern() {

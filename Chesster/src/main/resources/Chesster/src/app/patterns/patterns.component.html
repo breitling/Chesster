@@ -39,8 +39,8 @@
                         <ng2-chessposition #board1 [(position)]="chessPositionBoard"></ng2-chessposition>
                     </div>
                     <div class="flex flex-column mt-6">
-                        <p-button class="p-1" severity="info" (click)="start()">Start&nbsp;Position</p-button>
-                        <p-button class="p-1" severity="info" (click)="clear()">Clear</p-button>
+                        <p-button class="p-1" severity="info" (click)="start(1)">Start&nbsp;Position</p-button>
+                        <p-button class="p-1" severity="info" (click)="clear(1)">Clear</p-button>
                     </div>
                     <div class="flex flex-column mt-6 p-2">
                         <input type="text" pInputText placeholder="Title" [(ngModel)]="pattern.title">
@@ -89,8 +89,8 @@
                         <ng2-chessposition #board3 [(position)]="pattern.fen"></ng2-chessposition>
                     </div>
                     <div class="flex flex-column mt-6">
-                        <p-button class="p-1" severity="info" (click)="start()">Start&nbsp;Position</p-button>
-                        <p-button class="p-1" severity="info" (click)="clear()">Clear</p-button>
+                        <p-button class="p-1" severity="info" (click)="start(3)">Start&nbsp;Position</p-button>
+                        <p-button class="p-1" severity="info" (click)="clear(3)">Clear</p-button>
                     </div>
                     <div class="flex flex-column mt-6 p-2">
                         <input type="text" pInputText placeholder="Id" [(ngModel)]="pattern.id" readonly>
