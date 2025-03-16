@@ -43,8 +43,11 @@ export class PatternsComponent implements OnInit {
     public adding : boolean;
     public editing : boolean;
     public showButtons : boolean = false;
+    public orientation : boolean = true;
 
-    @ViewChild("board") board : any;
+    @ViewChild("board1") board1 : any;
+    @ViewChild("board2") board2 : any;
+    @ViewChild("board3") board3 : any;
 
     public turns: string [];
 
@@ -74,6 +77,16 @@ export class PatternsComponent implements OnInit {
         this.selectedPattern = undefined;
     }
 
+    public flipboard() {
+        if (this.orientation) {
+            this.orientation = false;
+            this.board2.orientation = this.orientation;
+        } else {
+            this.orientation = true;
+            this.board2.orientation = this.orientation;
+        }
+    }
+
     public add() {
         this.adding = true;
         this.pattern = this.dataService.createPattern();
@@ -86,18 +99,18 @@ export class PatternsComponent implements OnInit {
     }
 
     public clear() {
-        if (this.board)
-            this.board.clear();
+        if (this.board1)
+            this.board1.clear();
     }
 
     public start() {
-        if (this.board)
-            this.board.start();
+        if (this.board1)
+            this.board1.start();
     }
 
     public addPattern() {
         if (this.pattern.title.length > 0) {
-            this.pattern.fen = this.board.fen();
+            this.pattern.fen = this.board1.fen();
             this.dataService.addPattern(this.pattern).then(
                 (response) => {
                     this.messages.set([{ severity : 'success', text: response}]);
@@ -167,7 +180,7 @@ export class PatternsComponent implements OnInit {
     }
 
     public updatePattern() {
-        this.pattern.fen = this.board.fen();
+        this.pattern.fen = this.board3.fen();
         this.dataService.updatePattern(this.pattern).then(
             (response) => {
                 this.messages.set([{ severity : 'success', text: response}]);

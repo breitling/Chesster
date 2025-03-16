@@ -214,6 +214,10 @@ export class ChessboardComponent implements OnInit, AfterViewInit {
         return this.board.fen();
     }
 
+    public turn() : string {
+        return this.board.turn();
+    }
+
 //  VARIATION STUFF
 
     public startVariation(fen : string) : string {

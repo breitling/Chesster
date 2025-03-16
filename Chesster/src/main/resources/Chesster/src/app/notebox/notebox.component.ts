@@ -21,7 +21,7 @@ import { Database } from '../Models/Database';
 })
 export class NoteBoxComponent implements OnInit, OnChanges {
 
-    @Input() public game : Game | undefined;
+    @Input() public game : Game;
 
     public database : Database;
 
@@ -36,6 +36,7 @@ export class NoteBoxComponent implements OnInit, OnChanges {
         this.notes = [];
         this.checked = [];
         this.database = dataService.getDatabase();
+        this.game = dataService.createGame();
     }
 
     public ngOnInit() {
@@ -140,7 +141,7 @@ export class NoteBoxComponent implements OnInit, OnChanges {
 //  PRIVATE METHODS
 
     private getData() {
-        if (this.game) {
+        if (this.game.id != '') {
             console.log('Getting notes from backend');
             this.dataService.getNotes(this.database.id, this.game.id).then(
                 (notes : Note []) => {

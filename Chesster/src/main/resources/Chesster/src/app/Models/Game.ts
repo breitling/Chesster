@@ -1,3 +1,5 @@
+import { Variation } from "./Variation";
+
 export interface Game {
 	id : string;
 	sourceId : string;
@@ -12,8 +14,9 @@ export interface Game {
 	round : number;
 	date : string;
 	result : string;
-	eco : string
+	eco : string;
 	fen : string;
 	moveCount : number;
 	moves : string;
+	variations : Variation [];
 }

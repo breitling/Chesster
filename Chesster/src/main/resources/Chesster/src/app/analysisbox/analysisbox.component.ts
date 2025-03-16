@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, signal, SimpleChanges } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { ButtonModule } from 'primeng/button';
@@ -27,9 +27,11 @@ import { Variation } from '../Models/Variation';
     styleUrl: './analysisbox.component.scss',
     providers: [MessageService]
 })
-export class AnalysisBoxComponent implements OnInit, OnDestroy {
+export class AnalysisBoxComponent implements OnInit, OnChanges, OnDestroy {
 
-    @Input() public game : Game | undefined;
+    @Input() public game : Game;
+    @Input() public moves : string;
+
     @Output() variationEvent = new EventEmitter<Variation>();
 
     public doingReview = false;
@@ -55,12 +57,20 @@ export class AnalysisBoxComponent implements OnInit, OnDestroy {
     public selectedDepth: any = this.depths[1];
 
     constructor(private messageService: MessageService, private dataService : DataService) {
+        this.game = dataService.createGame();
+        this.moves = '';
     }
 
     public ngOnInit() {
         this.reviewSubscriber = this.dataService.gameReviewEmitter.subscribe((msg : string) => {
             this.reviewDone(msg);
         });
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.game = this.dataService.cloneGame(this.game);
+        this.game.moves = this.moves;
+        this.game.variations = [];
     }
 
     ngOnDestroy() : void {
@@ -72,7 +82,7 @@ export class AnalysisBoxComponent implements OnInit, OnDestroy {
     public review() {
         this.reviewAnalysis = [];
 
-        if (this.game) {
+        if (this.game.moves.length > 0) {
             if (this.doingReview === false) {
                 this.doingReview = true;
                 const rc = this.dataService.doGameReview(this.dataService.engineIndex(), this.selectedDepth.depth, this.game, (v : number) => { this.progress = v; })
@@ -197,7 +207,7 @@ export class AnalysisBoxComponent implements OnInit, OnDestroy {
             v.turn = v.index + 1;
             v.fen = data.move.fen;
             v.startingFen = v.fen;
-            v.value = data.move.moveList;
+            v.moves = data.move.moveList;
 
             this.variationEvent.emit(v);
         }    

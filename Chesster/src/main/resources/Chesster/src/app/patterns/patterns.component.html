@@ -36,7 +36,7 @@
                 <h3 class="new-title">New Pattern</h3>
                 <div class="flex flex-row">
                     <div class="p-2">
-                        <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
+                        <ng2-chessposition #board1 [(position)]="chessPositionBoard"></ng2-chessposition>
                     </div>
                     <div class="flex flex-column mt-6">
                         <p-button class="p-1" severity="info" (click)="start()">Start&nbsp;Position</p-button>
@@ -66,7 +66,8 @@
                 {{selectedPattern.notes}}<br>
                 {{selectedPattern.created}}<br>
                 <br>
-                <ng2-chessboard #board [(position)]="selectedPattern.fen" [(boardWidth)]="boardWidth"></ng2-chessboard>
+                <p-button [style]="{'position':'absolute','left':'76rem'}" icon="pi pi-sync" (click)="flipboard()"></p-button>
+                <ng2-chessboard #board2 [(position)]="selectedPattern.fen" [(boardWidth)]="boardWidth"></ng2-chessboard>
             </div>
             <div class="m-2" *ngIf="showButtons === false">
                 <p-button icon="pi pi-chevron-circle-right" size="small" [rounded]="true" [text]="true" (click)="showButtons = true;"/>
@@ -85,7 +86,7 @@
                 <h3 class="new-title">Edit Pattern</h3>
                 <div class="flex flex-row">
                     <div class="p-2">
-                        <ng2-chessposition #board [(position)]="pattern.fen"></ng2-chessposition>
+                        <ng2-chessposition #board3 [(position)]="pattern.fen"></ng2-chessposition>
                     </div>
                     <div class="flex flex-column mt-6">
                         <p-button class="p-1" severity="info" (click)="start()">Start&nbsp;Position</p-button>

@@ -68,7 +68,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
 //  VARIATION STUFF
     noVariation : number = -1;
-    variations : Variation [] = [];
     currentVariation : number = this.noVariation;
 
     selectedMove : any | undefined;
@@ -81,7 +80,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     mate : string;
 
     public database : Database;
-    public game : Game | undefined;
+    public game : Game;
 
     tooltipOptions = {
         tooltipZIndex: "10px",
@@ -99,6 +98,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     ];
 
     public variationItems : MenuItem [] = [
+        {label: '+ Dump Variation', command: (event) => this.dumpVariation(event)},
         {label: '+ Reset Variation', command: (event) => this.resetVariation(event) },
         {label: '- Delete Variation', command: (event) => this.deleteVariation(event) }
     ];
@@ -112,13 +112,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
     constructor(private messageService: MessageService, private dataService : DataService) {
         this.playertop = { name: 'Player', rating: 1500, country: 'USA'};
         this.playerbottom = { name: 'Hero', rating: 1500, country: 'USA'};
+
         this.enginemoves = undefined;
         this.enginescore = 0;
         this.mate = '';
-        this.game = undefined;
 
-        this.engineName = this.dataService.engines()[1].name;
+        this.game = dataService.createGame();
         this.database = dataService.getDatabase();
+        this.engineName = this.dataService.engines()[1].name;
     }
 
     ngOnInit() {
@@ -178,9 +179,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public undoLastMove() {
-        if (this.currentVariation === this.noVariation) {
-            this.board.undo();
+        this.board.undo();
 
+        if (this.currentVariation === this.noVariation) {
             if (this.whoseTurn === Sides.WHITE) {
                 this.turns--;
                 this.halfTurns--;
@@ -196,6 +197,17 @@ export class BoardComponent implements OnInit, AfterViewInit {
             }
 
             this.board.position = this.currentFen();
+        } else {
+            const v = this.game.variations[this.currentVariation];
+            const n = v.moves.lastIndexOf(' ');
+
+            v.moves = v.moves.substring(0, n);
+
+            if (v.side === Sides.WHITE)
+                v.turn--;
+
+            v.side = 1 - v.side;
+            v.moveCount--;
         }
     }
 
@@ -235,6 +247,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public restart() {
+        this.game = this.dataService.createGame();
+
         this.board.position = 'start';
         this.board.reset();
 
@@ -247,8 +261,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.enginescore = 0;
 
         this.showVariations = false;
-        this.variations = [];
         this.currentVariation = this.noVariation;
+        this.saveOrUpdate = 'Save';
     }
 
     public selectMove(m : ChessNotationTurn, side : number) {
@@ -313,9 +327,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.tabindex = 2;
         this.saveOrUpdate = 'Save';
 
-        if (this.game === undefined) 
-            this.game = this.dataService.createGame();
-        else
+        if (this.game.id != '') 
             this.saveOrUpdate = 'Update';
 
         if (this.topcolor === 'white') {
@@ -337,8 +349,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
     public makeVariation(v: Variation) {
         let index = v.index;
 
-        if (this.variations[index].index === 0) {
-            this.variations[index] = v;
+        if (this.game.variations[index].index === 0) {
+            this.game.variations[index] = v;
             this.currentVariation = v.index;
 
             const f = this.board.startVariation(v.fen);
@@ -354,8 +366,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
         if (this.selectedVariation) {
             const data = this.selectedVariation;
 
-            if (this.variations[data.index].index !== 0) {
-                this.variations[data.index] = this.dataService.createVariation(0);
+            if (this.game.variations[data.index].index !== 0) {
+                this.game.variations[data.index] = this.dataService.createVariation(0);
             } else {
                 console.log('Failed to delete variation at ' + data.index);
             }
@@ -363,11 +375,11 @@ export class BoardComponent implements OnInit, AfterViewInit {
         
         let count = 0;
 
-        for (var n = 0; n < this.variations.length; n++)
-            if (this.variations[n].index === 0)
+        for (var n = 0; n < this.game.variations.length; n++)
+            if (this.game.variations[n].index === 0)
                 count++;
 
-        if (count === this.variations.length)
+        if (count === this.game.variations.length)
             this.showVariations = false;
     }
 
@@ -375,7 +387,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         const index = Number(this.enginemoves?.substring(0, this.enginemoves.indexOf('.')))-1;
         const side = this.enginemoves?.includes('. ...') ? Sides.BLACK : Sides.WHITE;
 
-        if (this.variations[index].index === 0 && this.enginemoves) {
+        if (this.game.variations[index].index === 0 && this.enginemoves) {
             console.log('Creat variation...');
 
             const v = this.dataService.createVariation(index);
@@ -383,9 +395,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
             v.turn = v.index + 1;
             v.fen = side === Sides.WHITE ? this.moves[index-1].blackFen : this.moves[index].whiteFen;
             v.startingFen = v.fen;
-            v.value = this.enginemoves;
+            v.moves = this.enginemoves;
 
-            this.variations[index] = v;
+            this.game.variations[index] = v;
             this.currentVariation = v.index;
             this.showVariations = true;
 
@@ -397,15 +409,29 @@ export class BoardComponent implements OnInit, AfterViewInit {
         }
     }
 
+    public dumpVariation(event : MenuItemCommandEvent) {
+        if (this.selectedVariation) {
+            const data = this.selectedVariation;
+            const v = this.game.variations[data.index];
+            this.dump(v);
+        }
+    }
+
+    private dump(v: Variation) {
+        console.log('V: ' + v.fen + '/' + v.index + ' = ' + v.turn + ' ' 
+                          + v.moves + (v.side === Sides.WHITE ? ' White to move' : ' Black to move'));
+    }
+
     public resetVariation(event : MenuItemCommandEvent) {
         if (this.selectedVariation) {
             const data = this.selectedVariation;
 
-            if (this.variations[data.index].index !== 0) {
-                const v = this.variations[data.index];
+            if (this.game.variations[data.index].index !== 0) {
+                const v = this.game.variations[data.index];
 
                 v.moveCount = 0;
                 v.fen = v.startingFen;
+                this.board.selectVariation(v.fen);
                 this.board.position = v.fen;
             }
         }
@@ -414,11 +440,13 @@ export class BoardComponent implements OnInit, AfterViewInit {
 //  EVENT HANDLERS
 
     public calcMoveStyle(m : ChessNotationTurn, side : number) {
-        if (side === Sides.WHITE && m.turn === this.turns+1 && this.whoseTurn == Sides.BLACK) 
-            return 'background-color: lightgrey;';
+        if (this.currentVariation == this.noVariation) {
+            if (side === Sides.WHITE && m.turn === this.turns+1 && this.whoseTurn == Sides.BLACK) 
+                return 'background-color: lightgrey;';
 
-        if (side === Sides.BLACK && m.turn === this.turns && this.whoseTurn == Sides.WHITE)
-            return 'background-color: lightgrey;';
+            if (side === Sides.BLACK && m.turn === this.turns && this.whoseTurn == Sides.WHITE)
+                return 'background-color: lightgrey;';
+        } 
 
         return 'background-color: white;';
     }
@@ -443,24 +471,23 @@ export class BoardComponent implements OnInit, AfterViewInit {
         if (this.currentVariation === this.noVariation) {
             if (this.whoseTurn === Sides.WHITE) {
                 this.moves.push({ turn: this.turns+1, whiteMove: e, whiteFen: '', blackMove: '', blackFen: '' });
-                this.variations.push(this.dataService.createVariation(0));
+                this.game.variations.push(this.dataService.createVariation(0));
             } else {
                 this.moves[this.moves.length-1].blackMove = e;
             }
         } else {
-            const v = this.variations[this.currentVariation];
+            const v = this.game.variations[this.currentVariation];
 
-            if (v.value.endsWith('. ') === false && v.side === Sides.WHITE)
-                v.value = v.value + ' ' + (v.turn) + '. ';
-
-            v.value = v.value + ' ' + e;
-
-            if (v.side === Sides.BLACK)
+            if (v.side === Sides.WHITE) // && v.moves.endsWith('. ') === false)
+                v.moves = v.moves + ' ' + (v.turn) + '.';
+            else
                 v.turn++;
 
+            v.moves = v.moves + ' ' + e;
             v.side = 1 - v.side;
-            v.fen = this.board.fen();
             v.moveCount++;
+
+            v.fen = this.board.fen();
         }
     }
 
@@ -468,6 +495,12 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public preloadGame(g : Game) {
+        console.log(g.moves);
+
+        const vs = this.game.variations;
+
+        this.game.variations = [];
+
         if (this.moves.length === 0) {
             console.log('Starting preload...');
         //  this.restart();
@@ -496,7 +529,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
                     }
 
                     this.moves.push({ turn: turn++, whiteMove: w, whiteFen: wfen, blackMove: b, blackFen: bfen });
-                    this.variations.push(this.dataService.createVariation(0));
+                    this.game.variations.push(this.dataService.createVariation(0));
 
                 //  console.log(w + ',' + b);
                 }
@@ -519,11 +552,29 @@ export class BoardComponent implements OnInit, AfterViewInit {
                     }
 
                     this.moves.push({ turn: turn++, whiteMove: w, whiteFen: wfen, blackMove: b, blackFen: bfen });
-                    this.variations.push(this.dataService.createVariation(0));
+                    this.game.variations.push(this.dataService.createVariation(0));
 
                 //  console.log(w + ',' + b);
                 }
             }
+
+            vs.forEach(v => {
+                const vary = this.dataService.createVariation(v.index);
+
+                vary.moveCount = 0;
+                vary.fen = v.fen;
+                vary.startingFen = v.fen;
+                vary.moves = v.moves.replaceAll("  "," ");  // hack to cure an issue with extra spaces in variation move text
+                vary.turn = vary.index + 1;
+                vary.side = (vary.moves.indexOf('...') > 0) ? Sides.BLACK : Sides.WHITE;
+
+                this.game.variations[v.index] = vary;
+                const f = this.board.startVariation(v.fen);
+
+                this.showVariations = true;
+
+                this.dump(vary);
+            });
 
             this.messages.set([{ severity : 'success', text: 'Done preloading game.'}]);
         } else {
@@ -668,14 +719,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
         if (this.selectedMove) {
             const data  = this.selectedMove;
 
-            if (this.variations[data.index].index === 0) {
+            if (this.game.variations[data.index].index === 0) {
                 const v = this.dataService.createVariation(data.index);
 
                 v.turn = v.index + 1;
-                v.value = '' + (v.turn) + '. ';
+                v.moves = '' + (v.turn) + '. ';
 
                 if (data.color === Sides.BLACK) {
-                    v.value = v.value + '... ';
+                    v.moves = v.moves + '... ';
                     v.fen = this.moves[data.index].whiteFen;
                     v.side = Sides.BLACK;
                 } else {
@@ -685,7 +736,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
                 v.startingFen = v.fen;
 
-                this.variations[data.index] = v;
+                this.game.variations[data.index] = v;
                 this.currentVariation = v.index;
 
                 const f = this.board.startVariation(v.fen);
@@ -696,40 +747,38 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public variationVisible(v : Variation) {
         if (v.index === 0)
-            return 'visibility: hidden;'
+            return 'visibility: hidden;';   // background-color: white;' 
         else
-            return 'visibility: visible;';
+            return 'visibility: visible;';  // background-color: lightgrey';
     }
-
+;
     public selectVariation(v: Variation) {
         this.currentVariation = v.index;
         this.board.position = this.board.selectVariation(v);
 
-        const moves = v.value.split(' ');
+        const moves = v.moves.split(' ');
         let index = Math.floor(v.moveCount/2) + v.moveCount + 1;
 
-        if (index === 1) {
-            v.turn = Number(moves[0]);
-
-            if (moves[index] === '...') {
-                index++;
-                v.moveCount++;
-            }
-        }
-
         if (index < moves.length) {
+            if (index === 1) {
+                v.turn = Number(moves[0]);
+
+                if (moves[index] === '...') {
+                    index++;
+                    v.moveCount++;
+                }
+            }
+
             const m = moves[index];
 
             this.board.move(m);
-            
             v.fen = this.board.fen();
             v.side = 1 - v.side;
-        //  v.turn = Number(moves[something]
 
-            if (/\d+./.test(moves[index+1]))
+            if (/\d+./.test(moves[index-2]))
                 v.turn++;
+            
+            v.moveCount++;
         }
-
-        v.moveCount++;
     }
 }

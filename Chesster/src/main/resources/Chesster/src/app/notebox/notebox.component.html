@@ -1,17 +1,17 @@
 <h3 class="new-title">Game Notes</h3>
 <div class="flex p-1">
-    <div class="flex-row p-2" *ngIf="game" style="z-index: 100;">
+    <div class="flex-row p-2" *ngIf="game.id !== ''" style="z-index: 100;">
         <textarea class="notearea" rows="4" cols="100" [(ngModel)]="note"></textarea> &nbsp;
         <p-button *ngIf="index < 0" class="centered" severity="info" (click)="addNote()">Add</p-button> &nbsp;
         <p-button *ngIf="index >= 0" class="centered" severity="info" (click)="updateNote()">Update</p-button> &nbsp;
         <p-button *ngIf="index >= 0" class="centered" severity="warn" (click)="reset()">Reset</p-button> &nbsp;
     </div>
-    <div class="flex-row p-2" *ngIf="game === undefined">
+    <div class="flex-row p-2" *ngIf="game.id === ''">
         No game selected.
     </div>
 </div>
 
-<div class="flex flex-column m-2" *ngIf="game">
+<div class="flex flex-column m-2" *ngIf="game.id !== ''">
     <h4>Notes:</h4>
     @for (note of notes; track note.note) {
         <div class="note p-2"  [ngStyle]="{ 'border-color': getBGC($index) }">

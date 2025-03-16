@@ -10,6 +10,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
 import { DataService } from '../Services/DataService.service';
 import { Database } from '../Models/Database';
+import { Variation } from '../Models/Variation';
 
 @Component({
     selector: 'updatebox',
@@ -21,7 +22,7 @@ import { Database } from '../Models/Database';
 })
 export class UpdateBoxComponent {
 
-    @Input() public game : Game | undefined;
+    @Input() public game : Game;
     @Input() public title : string;
 
     @Output() preloadEvent = new EventEmitter<Game>();
@@ -34,33 +35,65 @@ export class UpdateBoxComponent {
     constructor(private messageService: MessageService, private dataService : DataService) {
         this.title = 'Save';
         this.database = dataService.getDatabase();
+        this.game = dataService.createGame();
     }
 
 //  CALLBACKS
     
     public saveGame() {
-        if (this.game !== undefined)
-            this.dataService.saveGame(this.database.id, this.game, true);
+        if (this.game.id === '') {
+            const g = this.dataService.cloneGame(this.game);
+            const data = JSON.stringify(this.convertVariations(g.variations));
 
-        this.messages.set([{ severity : 'success', text: 'Game saved.'}]);
+            g.variations = [];
+
+            this.dataService.saveGame(this.database.id, g, data, true).then(
+                (responce) => {
+                    this.messages.set([{ severity : 'success', text: 'Game saved.'}]);
+                },
+                (error) => {
+                    this.messages.set([{ severity : 'error', text: error}]);
+                }
+            );
+        }
     }
 
     public updateGame() {
-        if (this.game !== undefined)
-            this.dataService.updateGame(this.database.id, this.game);
+        if (this.game.id !== '') {
+            const g = this.dataService.cloneGame(this.game);
+            const data = JSON.stringify(this.convertVariations(g.variations));
 
-        this.messages.set([{ severity : 'success', text: 'Game updated.'}]);
+            g.variations = [];
+
+            this.dataService.updateGame(this.database.id, g, data).then(
+                (responce) => {
+                    this.messages.set([{ severity : 'success', text: 'Game updated.'}]);
+                },
+                (error) => {
+                    this.messages.set([{ severity : 'error', text: error}]);
+                }
+            );
+        }
     }
 
     public cancel() {
-        if (this.game?.id.length === 0)
-            this.game = undefined;
-        
         this.cancelEvent.emit(0);
     } 
 
     public load() {
-        if (this.game)
-            this.preloadEvent.emit(this.game);
-    }    
+        this.preloadEvent.emit(this.game);
+    }
+
+//  PRIVATE METHODS
+
+    private convertVariations(variations : Variation []) : any [] {
+        const data : any [] = [];
+
+        variations.forEach(v => {
+            if (v.index > 0)
+                data.push({ index: v.index, moves: v.moves, fen: v.startingFen });
+        });
+
+        return data;
+    }
 }

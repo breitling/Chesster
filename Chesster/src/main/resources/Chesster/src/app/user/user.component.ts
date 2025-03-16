@@ -112,7 +112,7 @@ export class UserComponent {
             game.moveCount = game.moves.split(' ').length / 3;
             // game.eco = pgnparts[9].split(' ')[1].substring(1,4); ECO pgnparts index? not always 9
             
-            this.dataService.saveGame(database.id, game, true).then(
+            this.dataService.saveGame(database.id, game, '[]', true).then(
                 (results) => {
                     this.messages.set([{ severity : 'success', text: 'Sucessfully imported game(s).'}]);
                 },

@@ -62,7 +62,7 @@
                         <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
                             <div class="m-1" style="width: auto; max-width: 54rem;">
                                 <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
-                                <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="variations" [(contextMenuSelection)]="selectedVariation" 
+                                <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="game.variations" [(contextMenuSelection)]="selectedVariation" 
                                                          [contextMenu]="variationcm" [tableStyle]="{ 'max-width': '54rem', 'overflow-x': 'hidden' }">
                                     <ng-template #header>
                                         <tr>
@@ -72,10 +72,10 @@
                                     <ng-template #body let-variation>
                                         <tr>
                                             <td (click)="selectVariation(variation)" [style]="variationVisible(variation)"
-                                                    [pContextMenuRow]="{'index': variation.index }">{{variation.value}}</td>
+                                                    [pContextMenuRow]="{'index': variation.index }">{{variation.moves}}</td>
                                         </tr>
                                     </ng-template>
-                                </p-table>      
+                                </p-table>
                             </div>
                         </div>
                     </p-tabpanel>
@@ -89,7 +89,7 @@
                     </p-tabpanel>
 
                     <p-tabpanel [value]="3">
-                        <analysisbox [game]="game" (variationEvent)="makeVariation($event)"/>
+                        <analysisbox [game]="game" [moves]="getMoves(moves)" (variationEvent)="makeVariation($event)"/>
                     </p-tabpanel>
                 </p-tabpanels>
             </p-tabs>
@@ -107,6 +107,7 @@
             <span *ngIf="database">
                 <p-button *ngIf="this.game !== undefined" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>&nbsp;
                 <p-button *ngIf="this.game === undefined" (click)="save()" tooltipPosition="top" pTooltip="Save Game">Save</p-button>&nbsp;
+                <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">Database: {{database.ds.name}}</span>
             </span>
         </div>
     </div>

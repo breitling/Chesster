@@ -103,7 +103,7 @@ export class GamesComponent implements OnInit {
     }
 
     public update() {
-        this.dataService.updateGame(this.database.id, this.selectedGame).then(
+        this.dataService.updateGame(this.database.id, this.selectedGame, '[]').then(
             (results) => {
                 this.messages.set([{ severity : 'success', text: 'Sucessfully updated game.'}]);
             },

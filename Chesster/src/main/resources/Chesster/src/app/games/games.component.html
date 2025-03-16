@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="databox flex border-1 border-round-lg m-1" *ngIf="database" style="z-index: 100;">
+    <div class="databox flex border-1 border-round-lg m-1" style="z-index: 100;" *ngIf="database">
         <p-panel *ngIf="selectedGame">
             <h3 class="new-title">Selected Game</h3>
             <div class="p-2">
@@ -77,12 +77,14 @@
             </div>
         </p-panel>
 
-        <p-panel *ngIf="!selectedGame">
+        <p-panel class="filterbox" *ngIf="!selectedGame">
             <h3 class="new-title"> Filter Games by Position: </h3>
-            <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
-            <p-button (click)="find()">Find Position</p-button>&nbsp;
-            <p-button (click)="start()">Start Position</p-button>&nbsp;
-            <p-button (click)="clear()">Clear</p-button>
+            <div class="filterboxbox">
+                <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
+                <p-button (click)="find()">Find Position</p-button>&nbsp;
+                <p-button (click)="start()">Start Position</p-button>&nbsp;
+                <p-button (click)="clear()">Clear</p-button>
+            </div>
         </p-panel>
     </div>
 </div>

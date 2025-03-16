@@ -155,6 +155,9 @@ export class DataService {
     public async getGames(id : string) : Promise<Game []> {
         return new Promise((resolve, reject) => {
             const data = this.javaConnector().getGames(id);
+
+            console.log(data);
+            
             const games : Game [] = JSON.parse(data);
 
             if (games)
@@ -176,9 +179,9 @@ export class DataService {
         });
     }
 
-    public async saveGame(id : string, game : Game, generate : boolean) : Promise<Boolean> {
+    public async saveGame(id : string, game : Game, variations: string, generate : boolean) : Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().saveGame(id, JSON.stringify(game), generate);
+            const b = this.javaConnector().saveGame(id, JSON.stringify(game), variations, generate);
 
             if (b)
                 resolve(b);
@@ -187,9 +190,9 @@ export class DataService {
         });
     }
 
-    public async updateGame(id : string, game : Game) : Promise<Boolean> {
+    public async updateGame(id : string, game : Game, variations: string) : Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().updateGame(id, JSON.stringify(game));
+            const b = this.javaConnector().updateGame(id, JSON.stringify(game), variations);
 
             if (b)
                 resolve(b);
@@ -365,13 +368,13 @@ export class DataService {
 
     createGame() : Game {
         return { id : '', sourceId : '', white : '', whiteELO : '', black : '', blackELO : '', event : '', site : '', eventDate : '', timeControl : '', 
-                 round : 0, date : '', result : 'NORESULT', eco : '', fen : '', moveCount : 0, moves : '' }
+                 round : 0, date : '', result : 'NORESULT', eco : '', fen : '', moveCount : 0, moves : '', variations: [] }
     }
 
     cloneGame(g : Game) : Game {
         return { id : g.id, sourceId : g.sourceId, white : g.white, whiteELO : g.whiteELO, black : g.black, blackELO : g.blackELO, event : g.event, 
             site : g.site, eventDate : g.eventDate, timeControl : g.timeControl, round : g.round, date : g.date, result : g.result, eco : g.eco, 
-            fen : g.fen, moveCount : g.moveCount, moves : g.moves }
+            fen : g.fen, moveCount : g.moveCount, moves : g.moves, variations : g.variations}
     }
 
     creatNewChessEngine() : ChessEngine {
@@ -379,7 +382,7 @@ export class DataService {
     }
 
     createVariation(index: number) : Variation {
-        return { index: index, fen: '', value: '0.', startingFen: '', side: 0, turn: 0, moveCount: 0};
+        return { index: index, fen: '', moves: '0.', startingFen: '', side: 0, turn: 0, moveCount: 0};
     }
 
     createNote(gameid : string) : Note {

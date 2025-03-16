@@ -22,6 +22,7 @@ import com.breitling.jclib.model.Database;
 import com.breitling.jclib.model.Game;
 import com.breitling.jclib.model.Note;
 import com.breitling.jclib.model.Pattern;
+import com.breitling.jclib.model.Variation;
 import com.breitling.jclib.util.Factory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -183,13 +184,17 @@ public class JavaConnector
     	return json;
     }
     
-    public Boolean saveGame(String id, String json, Boolean generatePositions) 
+    public Boolean saveGame(String id, String json, String json2, Boolean generatePositions) 
     {
     	boolean rc = false;
     	
     	try 
     	{
 			Game g = mapper.readValue(json, Game.class);
+			Variation [] variations = mapper.readValue(json2, Variation [].class);
+			
+			g.setVariations(variations);
+			
 			rc  = gameService.saveGame(id, g, generatePositions);
 		}
     	catch (JsonMappingException e) 
@@ -204,13 +209,16 @@ public class JavaConnector
     	return rc;
     }
     
-    public Boolean updateGame(String id, String json) 
+    public Boolean updateGame(String id, String json, String json2) 
     {
     	boolean rc = false;
     	
     	try 
     	{
 			Game g = mapper.readValue(json, Game.class);
+			Variation [] variations = mapper.readValue(json2, Variation [].class);
+			
+			g.setVariations(variations);
 			
 			rc = gameService.updateGame(id, g);
 		}
