@@ -214,4 +214,8 @@ export class AnalysisBoxComponent implements OnInit, OnChanges, OnDestroy {
             this.variationEvent.emit(v);
         }    
     }
+
+    public clear() {
+        this.reviewAnalysis = [];
+    }
 }

@@ -4,7 +4,8 @@
         <div class="p-2">
             <p-button severity="info" (click)="review()">Analyze</p-button> &nbsp;
             <p-button severity="danger" (click)="abortReview()" *ngIf="doingReview">Abort</p-button> &nbsp;
-            <p-select [options]="depths" [(ngModel)]="selectedDepth" optionLabel="name" placeholder="Select Analysis Level"></p-select>
+            <p-select [options]="depths" [(ngModel)]="selectedDepth" optionLabel="name" placeholder="Select Analysis Level"></p-select> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+            <p-button severity="warn" (click)="clear()" *ngIf="reviewAnalysis.length > 0">Clear Analysis</p-button>
         </div>
         <div class="flex-row w-100 p-2" *ngIf="doingReview">
             <p-toast/>
