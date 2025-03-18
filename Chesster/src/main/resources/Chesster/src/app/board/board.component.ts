@@ -105,6 +105,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public saveOrUpdate : string = 'Save';
     public showVariations : boolean = false;
+    public loadingmoves : boolean = false;
     public tabindex : number = 0;
 
     public messages = signal<any []>([]);
@@ -346,6 +347,19 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.game.moves = this.getMoves(this.moves) + this.addResults(this.game);
     }
 
+    public load() {
+        this.loadingmoves = true;
+    }
+
+    public loadMoves() {
+        this.preloadGame(this.game);
+        this.loadingmoves = false;
+    }
+
+    public cancel() {
+        this.loadingmoves = false;
+    }
+
     public makeVariation(v: Variation) {
         let index = v.index;
 
@@ -478,7 +492,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         } else {
             const v = this.game.variations[this.currentVariation];
 
-            if (v.side === Sides.WHITE) // && v.moves.endsWith('. ') === false)
+            if (v.side === Sides.WHITE && v.moves.endsWith('. ') === false)
                 v.moves = v.moves + ' ' + (v.turn) + '.';
             else
                 v.turn++;

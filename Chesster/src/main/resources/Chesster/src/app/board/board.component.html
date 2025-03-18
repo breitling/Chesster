@@ -35,47 +35,58 @@
 
                 <p-tabpanels>
                     <p-tabpanel [value]="0">
-                        <div class="movebox border-1 border-round-lg">
-                            <div class="mt-1">
-                                <p-contextMenu #movecm [model]="gameItems" [baseZIndex]="1000"/>
-                                <p-table id="notation" [scrollable]="true" scrollHeight="820px" [value]="moves" [(contextMenuSelection)]="selectedMove" 
-                                                    [contextMenu]="movecm" [tableStyle]="{ 'min-width': '9rem' }">
-                                    <ng-template #header>
-                                        <tr>
-                                            <th>&nbsp;</th>
-                                            <th>White</th>
-                                            <th>Black</th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template #body let-move>
-                                        <tr>
-                                            <td>{{move.turn}}.</td>
-                                            <td [style]="calcMoveStyle(move,0)" (click)="selectMove(move,0)" 
-                                                        [pContextMenuRow]="{'move': move, 'color': 0, 'index': move.turn-1 }">{{move.whiteMove}}</td>
-                                            <td [style]="calcMoveStyle(move,1)" (click)="selectMove(move,1)" 
-                                                        [pContextMenuRow]="{'move': move, 'color': 1, 'index': move.turn-1 }">{{move.blackMove}}</td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>      
+                        <div class="flex flex-row">
+                            <div class="movebox border-1 border-round-lg">
+                                <div class="mt-1">
+                                    <p-contextMenu #movecm [model]="gameItems" [baseZIndex]="1000"/>
+                                    <p-table id="notation" [scrollable]="true" scrollHeight="820px" [value]="moves" [(contextMenuSelection)]="selectedMove" 
+                                                        [contextMenu]="movecm" [tableStyle]="{ 'min-width': '9rem' }">
+                                        <ng-template #header>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th>White</th>
+                                                <th>Black</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template #body let-move>
+                                            <tr>
+                                                <td>{{move.turn}}.</td>
+                                                <td [style]="calcMoveStyle(move,0)" (click)="selectMove(move,0)" 
+                                                            [pContextMenuRow]="{'move': move, 'color': 0, 'index': move.turn-1 }">{{move.whiteMove}}</td>
+                                                <td [style]="calcMoveStyle(move,1)" (click)="selectMove(move,1)" 
+                                                            [pContextMenuRow]="{'move': move, 'color': 1, 'index': move.turn-1 }">{{move.blackMove}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>      
+                                </div>
                             </div>
-                        </div>
-                        <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
-                            <div class="m-1" style="width: auto; max-width: 54rem;">
-                                <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
-                                <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="game.variations" [(contextMenuSelection)]="selectedVariation" 
-                                                         [contextMenu]="variationcm" [tableStyle]="{ 'max-width': '54rem', 'overflow-x': 'hidden' }">
-                                    <ng-template #header>
-                                        <tr>
-                                            <th>Variations</th>
-                                        </tr>
-                                    </ng-template>
-                                    <ng-template #body let-variation>
-                                        <tr>
-                                            <td (click)="selectVariation(variation)" [style]="variationVisible(variation)"
-                                                    [pContextMenuRow]="{'index': variation.index }">{{variation.moves}}</td>
-                                        </tr>
-                                    </ng-template>
-                                </p-table>
+                            <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
+                                <div class="m-1" style="width: auto; max-width: 54rem;">
+                                    <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
+                                    <p-table id="variations" [scrollable]="true" scrollHeight="820px" [value]="game.variations" [(contextMenuSelection)]="selectedVariation" 
+                                                            [contextMenu]="variationcm" [tableStyle]="{ 'max-width': '54rem', 'overflow-x': 'hidden' }">
+                                        <ng-template #header>
+                                            <tr>
+                                                <th>Variations</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template #body let-variation>
+                                            <tr>
+                                                <td (click)="selectVariation(variation)" [style]="variationVisible(variation)"
+                                                        [pContextMenuRow]="{'index': variation.index }">{{variation.moves}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                            <div class="border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap; z-index: 100;" *ngIf="loadingmoves">
+                                <div class="p-2">
+                                    <textarea rows="25" cols="100" pInputTextarea [(ngModel)]="game.moves"></textarea>
+                                </div>
+                                <div class="p-2">
+                                    <p-button (click)="loadMoves()">Load</p-button>&nbsp;
+                                    <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
+                                </div>
                             </div>
                         </div>
                     </p-tabpanel>
@@ -85,7 +96,7 @@
                     </p-tabpanel>
 
                     <p-tabpanel [value]="2">
-                        <updatebox [game]="game" [title]="saveOrUpdate" (preloadEvent)="preloadGame($event)" (cancelEvent)="changeTab($event)"></updatebox>
+                        <updatebox [game]="game" [title]="saveOrUpdate" (cancelEvent)="changeTab($event)"></updatebox>
                     </p-tabpanel>
 
                     <p-tabpanel [value]="3">
@@ -103,10 +114,11 @@
             <p-button icon="pi pi-forward" (click)="nextMove()" tooltipPosition="top" pTooltip="Next Move"></p-button>&nbsp;
             <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
             <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
-            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;
+            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;&nbsp;&nbsp;
+            <p-button (click)="load()" tooltipPosition="top" pTooltip="Load Moves">Load Moves</p-button>&nbsp;
             <span *ngIf="database">
-                <p-button *ngIf="this.game !== undefined" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>&nbsp;
-                <p-button *ngIf="this.game === undefined" (click)="save()" tooltipPosition="top" pTooltip="Save Game">Save</p-button>&nbsp;
+                <p-button *ngIf="this.game.id !== ''" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>
+                <p-button *ngIf="this.game.id === ''" (click)="save()" tooltipPosition="top" pTooltip="Save Game">Save</p-button>&nbsp;
                 <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">Database: {{database.ds.name}}</span>
             </span>
         </div>

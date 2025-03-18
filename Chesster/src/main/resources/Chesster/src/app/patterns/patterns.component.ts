@@ -60,7 +60,7 @@ export class PatternsComponent implements OnInit {
         this.chessPositionBoard = '';
         this.messages.set([]);
 
-        this.turns = [ 'White', 'Black' ];
+        this.turns = [ 'White To Move', 'Black To Move' ];
     }
 
     ngOnInit(): void {
@@ -141,7 +141,6 @@ export class PatternsComponent implements OnInit {
     }
 
     public confirmDelete(event: Event) {
-        console.log("Got Here.");
         this.confirmationService.confirm({
             target: event.target as EventTarget,
             icon: 'pi pi-info-circle',
@@ -172,7 +171,6 @@ export class PatternsComponent implements OnInit {
     }
 
     public deletePattern() {
-        console.log('Got here..')
         this.dataService.deletePattern(this.pattern.id).then(
             (response) => {
                 this.messages.set([{ severity : 'success', text: response}]);

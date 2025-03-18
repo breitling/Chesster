@@ -1,5 +1,7 @@
 package com.breitling.chesster.connector;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,6 +13,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.breitling.chesster.service.ChessDotComService;
@@ -45,6 +48,9 @@ public class JavaConnector
     
     @SuppressWarnings("unused")
 	private JSObject javascriptConnector;
+    
+    @Value("${home}")
+    private String home;
     
     @Autowired
     private DirectoryService dirservice;
@@ -551,5 +557,38 @@ public class JavaConnector
     	}
     	
     	return msg;
+    }
+    
+    public String loadSettings() 
+    {
+    	try(FileInputStream is = new FileInputStream(new StringBuilder(home).append("/settings.json").toString()))
+    	{
+    		byte [] b = new byte[is.available()];
+    		
+    		is.read(b);
+    		is.close();
+    		
+    		return new String(b);
+    	}
+    	catch (Exception e)
+    	{
+    		LOG.error("Error loading settings: {}", e.getMessage());
+    		return "{ }";
+    	}
+    }
+    
+    public String saveSettings(String json) 
+    {
+    	try(FileOutputStream os = new FileOutputStream(new StringBuilder(home).append("/settings.json").toString()))
+    	{
+    		os.write(json.getBytes());
+    		os.close();
+    		
+        	return "Settings saved";
+    	}
+    	catch (Exception e)
+    	{
+    		return new StringBuilder("Failed to save settings: ").append(e.getMessage()).toString();
+    	}
     }
 }

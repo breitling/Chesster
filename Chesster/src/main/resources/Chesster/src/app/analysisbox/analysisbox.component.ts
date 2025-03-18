@@ -181,10 +181,12 @@ export class AnalysisBoxComponent implements OnInit, OnChanges, OnDestroy {
                 }
             });
         } else {
-            if (a.fen.includes('b'))
-                a.color = 'w';
-            else
+            const fen : string = a.fen;
+
+            if (fen.indexOf(' b ') > 0)
                 a.color = 'b';
+            else
+                a.color = 'w';
         }
 
         return values.length > 0 ? values.join(' ') : '';
@@ -200,7 +202,7 @@ export class AnalysisBoxComponent implements OnInit, OnChanges, OnDestroy {
             if (side === Sides.BLACK)
                 index = index-1;
 
-            console.log('Creat variation...');
+        //  console.log('Creat variation...');
 
             const v = this.dataService.createVariation(index);
             v.side = side;

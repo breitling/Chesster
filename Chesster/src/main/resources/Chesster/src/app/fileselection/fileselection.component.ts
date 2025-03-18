@@ -1,4 +1,4 @@
-import { Component, OnInit, output } from '@angular/core';
+import { Component, Input, OnInit, output } from '@angular/core';
 
 import { DataService } from '../Services/DataService.service';
 
@@ -14,7 +14,9 @@ import { TreeModule } from 'primeng/tree';
     styleUrl: './fileselection.component.scss'
 })
 export class FileselectionComponent implements OnInit {
-    public root = "/";
+    
+    @Input() public root: string;
+
     public files: TreeNode[] = [];
     public selected: TreeNode[] = [];
 
@@ -27,6 +29,7 @@ export class FileselectionComponent implements OnInit {
     public selectedFile = output<any>();
 
     constructor(private dataService : DataService) { 
+        this.root = '/';
     }
 
     ngOnInit(): void {

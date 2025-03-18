@@ -7,6 +7,7 @@ import { Game } from "../Models/Game";
 import { Variation } from "../Models/Variation";
 import { Note } from "../Models/Note";
 import { Pattern } from "../Models/Pattern";
+import { Settings } from "../Models/Settings";
 
 
 @Injectable({
@@ -30,7 +31,7 @@ export class DataService {
 //  private startBOard : string = 'rnbqkbnr/pppppppp/8/8/8/8/pppppppp/RNBQKBNR';
     private chessPositionBoard : string = this.clearBoard;
 
-    constructor (private ngZone: NgZone) {
+    constructor(private ngZone: NgZone) {
         this.javaConnector = () => { return 'TBI'; };
         this.games = [];
         this.preloadedGame = undefined;
@@ -44,12 +45,12 @@ export class DataService {
 
 //  GETTERS AND SETTERS
 
-    public getJavaConnector() : any {
-        return this.javaConnector();
+    public getJavaConnector() : Function {
+        return this.javaConnector;
     }
 
     public setJavaConnector(f : Function) {
-        this.javaConnector = f;
+        (this.javaConnector) = f;
     }
 
     public getDatabase() {
@@ -107,16 +108,16 @@ export class DataService {
 //  JAVA CONNECTOR CALLS
 
     public databaseExists(name : string) : boolean {
-        return this.javaConnector().databaseExists(name);
+        return (this.javaConnector)().databaseExists(name);
     }
 
     public exists(path : string) : boolean {
-        return this.javaConnector().exists(path);
+        return (this.javaConnector)().exists(path);
     }
 
     public async getAnalysis(index : number, fen : string) : Promise<Move> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getAnalysis(this.engines()[index].path, fen);
+            const data = (this.javaConnector)().getAnalysis(this.engines()[index].path, fen);
             const move : Move = JSON.parse(data);
 
             if (move != null)
@@ -128,7 +129,7 @@ export class DataService {
 
     public async getDatabases() : Promise<Database []> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getDatabases();
+            const data = (this.javaConnector)().getDatabases();
             const databases : Database [] = JSON.parse(data);
 
          // this.log(data);
@@ -142,7 +143,7 @@ export class DataService {
 
     public async getFiles(dir : string) : Promise<Array<any>> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getFiles(dir);
+            const data = (this.javaConnector)().getFiles(dir);
             const files : Array<any> = JSON.parse(data);
 
             if (files)
@@ -154,10 +155,7 @@ export class DataService {
 
     public async getGames(id : string) : Promise<Game []> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getGames(id);
-
-            console.log(data);
-            
+            const data = (this.javaConnector)().getGames(id);
             const games : Game [] = JSON.parse(data);
 
             if (games)
@@ -169,7 +167,7 @@ export class DataService {
 
     public async findGames(id: string, fen : string) : Promise<Game []> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().findGames(id, fen);
+            const data = (this.javaConnector)().findGames(id, fen);
             const games : Game [] = JSON.parse(data);
 
             if (games)
@@ -181,7 +179,7 @@ export class DataService {
 
     public async saveGame(id : string, game : Game, variations: string, generate : boolean) : Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().saveGame(id, JSON.stringify(game), variations, generate);
+            const b = (this.javaConnector)().saveGame(id, JSON.stringify(game), variations, generate);
 
             if (b)
                 resolve(b);
@@ -192,7 +190,7 @@ export class DataService {
 
     public async updateGame(id : string, game : Game, variations: string) : Promise<Boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().updateGame(id, JSON.stringify(game), variations);
+            const b = (this.javaConnector)().updateGame(id, JSON.stringify(game), variations);
 
             if (b)
                 resolve(b);
@@ -202,28 +200,28 @@ export class DataService {
     }
 
     public deleteGame(id : string, gid : string) {
-        return this.javaConnector().deleteGame(id, gid);
+        return (this.javaConnector)().deleteGame(id, gid);
     }
 
     public log(m : string) {
-        this.javaConnector().consoleLog(m);
+        (this.javaConnector)().consoleLog(m);
     }
 
     public saveDatabase(name: string, path: string, notes: string) {
-        return this.javaConnector().saveDatabase(name, path, notes);
+        return (this.javaConnector)().saveDatabase(name, path, notes);
     }
 
     public updateDatabase(id: string, name: string, path: string, notes: string) : string {
-        return this.javaConnector().updateDatabase(id, name, path, notes);
+        return (this.javaConnector)().updateDatabase(id, name, path, notes);
     }
 
     public deleteDatabase(id : string) {
-        return this.javaConnector().deleteDatabase(id);
+        return (this.javaConnector)().deleteDatabase(id);
     }
 
     public async import(id : string) : Promise<string> {
         return new Promise((resolve, reject) => {
-            const r = this.javaConnector().importGames(id);
+            const r = (this.javaConnector)().importGames(id);
 
             if (r == 'Success')
                 resolve(r);
@@ -234,7 +232,7 @@ export class DataService {
 
     public async getGamesFromCDC(account: string, year: string, month: string, timeClass: string) : Promise<string> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getGamesFromCDC(account, year, month, timeClass);
+            const data = (this.javaConnector)().getGamesFromCDC(account, year, month, timeClass);
 
             if (data)
                 resolve(data);
@@ -250,7 +248,7 @@ export class DataService {
         this.ngZone.runOutsideAngular(() => {
             const interval = setInterval(() => {
                 this.ngZone.run(() => {
-                    progress = this.javaConnector().reviewGame(this.engines()[index].path, depth, progress, JSON.stringify(g));
+                    progress = (this.javaConnector)().reviewGame(this.engines()[index].path, depth, progress, JSON.stringify(g));
                     progressBarCallback(progress);
                     if (progress >= 100) {
                         this.gameReviewEmitter.emit('Done');
@@ -265,7 +263,7 @@ export class DataService {
 
     public async abortReview() : Promise<string> {
         return new Promise((resolve, reject) => {
-            const msg = this.javaConnector().abortReview();
+            const msg = (this.javaConnector)().abortReview();
 
             if (msg == 'Aborted')
                 resolve('Review Aborted.');
@@ -275,17 +273,17 @@ export class DataService {
     }
 
     public getReviewAnalysis() : any [] {
-        const data = this.javaConnector().getReviewAnalysis();
+        const data = (this.javaConnector)().getReviewAnalysis();
         return JSON.parse(data);
     }
 
     public doGarbageCollection() : string {
-        return this.javaConnector().doGC();
+        return (this.javaConnector)().doGC();
     }
 
     public async getNotes(id: string, gameid: string) : Promise<Note []> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getNotes(id, gameid);
+            const data = (this.javaConnector)().getNotes(id, gameid);
             const notes : Note [] = JSON.parse(data);
 
             if (notes)
@@ -297,7 +295,7 @@ export class DataService {
 
     public async saveNote(id: string, note : Note) : Promise<boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().saveNote(id, JSON.stringify(note));
+            const b = (this.javaConnector)().saveNote(id, JSON.stringify(note));
 
             if (b)
                 resolve(true);
@@ -308,7 +306,7 @@ export class DataService {
 
     public async deleteNote(id: string, note: Note) : Promise<boolean> {
         return new Promise((resolve, reject) => {
-            const b = this.javaConnector().deleteNote(id, note.id);
+            const b = (this.javaConnector)().deleteNote(id, note.id);
 
             if (b)
                 resolve(true);
@@ -319,7 +317,7 @@ export class DataService {
 
     public async getPatterns() : Promise<Pattern []> {
         return new Promise((resolve, reject) => {
-            const data = this.javaConnector().getPatterns();
+            const data = (this.javaConnector)().getPatterns();
             const patterns : Pattern [] = JSON.parse(data);
 
          // this.log(data);
@@ -333,7 +331,7 @@ export class DataService {
 
     public async addPattern(pattern : Pattern) : Promise<string> {
         return new Promise((resolve, reject) => {
-            const rc = this.javaConnector().addPattern(JSON.stringify(pattern));
+            const rc = (this.javaConnector)().addPattern(JSON.stringify(pattern));
 
             if (rc != null)
                 resolve(rc);
@@ -344,7 +342,7 @@ export class DataService {
 
     public async updatePattern(pattern : Pattern) : Promise<string> {
         return new Promise((resolve, reject) => {
-            const rc = this.javaConnector().updatePattern(JSON.stringify(pattern));
+            const rc = (this.javaConnector)().updatePattern(JSON.stringify(pattern));
 
             if (rc != null)
                 resolve(rc);
@@ -355,12 +353,34 @@ export class DataService {
 
     public async deletePattern(id : string) : Promise<string> {
         return new Promise((resolve, reject) => {
-            const rc = this.javaConnector().deletePattern(id);
+            const rc = (this.javaConnector)().deletePattern(id);
 
             if (rc != null)
                 resolve(rc);
             else
                 reject('Failed to delete pattern.');
+        });
+    }
+
+    public async loadSettings() : Promise<Settings> {
+        return new Promise((resolve, reject) => {
+            const data = (this.javaConnector)().loadSettings();
+
+            if (data != null && data.length > 0)
+                resolve(JSON.parse(data));
+            else 
+                reject('Failed to load settings.');
+        });
+    }
+
+    public async saveSettings(settings : Settings)  : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const response = (this.javaConnector)().saveSettings(JSON.stringify(settings));
+
+            if (response)
+                resolve(response);
+            else
+                reject('Failed to save settings.');
         });
     }
 
@@ -390,7 +410,7 @@ export class DataService {
     }
 
     createPattern() : Pattern {
-        return { id: '', title: '', bitBoardHash: 0, fen: '', turn: 'White', moves: '', notes: '', source: '', created: '' };
+        return { id: '', title: '', bitBoardHash: 0, fen: '', turn: 'White To Move', moves: '', notes: '', source: '', created: '' };
     }
 
 //  CHESS ENGINES

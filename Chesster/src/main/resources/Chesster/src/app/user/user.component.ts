@@ -1,4 +1,4 @@
-import { Component, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { SelectModule } from 'primeng/select';
 import { Popover, PopoverModule } from 'primeng/popover';
 
 import { DataService } from '../Services/DataService.service';
-import { withRequestsMadeViaParent } from '@angular/common/http';
+import { SettingsService } from '../Services/SettingsService.service';
 
 interface TimeClass {
     class: string;
@@ -25,7 +25,7 @@ interface TimeClass {
     templateUrl: './user.component.html',
     styleUrl: './user.component.scss'
 })
-export class UserComponent {
+export class UserComponent implements OnInit {
     public database;
 
     public account : string;
@@ -44,7 +44,7 @@ export class UserComponent {
     @ViewChild('po') popover!: Popover;
     public selectedGame : any | undefined;  // for popover 
 
-    constructor(private dataService : DataService) {
+    constructor(private dataService : DataService, private settingsService : SettingsService) {
         this.database = this.dataService.getDatabase();
 
         this.account = '';
@@ -62,6 +62,11 @@ export class UserComponent {
         this.games = [];
 
         this.messages.set([]);
+        this.settingsService.load();
+    }
+
+    public ngOnInit() {
+        this.account = this.settingsService.getChessDotComAccount();
     }
 
     public getGames() {

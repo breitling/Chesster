@@ -5,8 +5,8 @@ import { GamesComponent } from './games/games.component';
 import { UserComponent } from './user/user.component';
 import { BoardComponent } from './board/board.component';
 import { ChessboardComponent } from './chessboard/chessboard.component';
-import { PatternValidator } from '@angular/forms';
 import { PatternsComponent } from './patterns/patterns.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const routes: Routes = [
     { path: 'engines', component: ChessEnginesComponent },
@@ -15,6 +15,7 @@ export const routes: Routes = [
     { path: 'user', component: UserComponent },
     { path: 'board', component: BoardComponent },
     { path: 'chessboard', component: ChessboardComponent },
-    { path: 'patterns', component: PatternsComponent }
+    { path: 'patterns', component: PatternsComponent },
+    { path: 'settings', component: SettingsComponent }
 ];
 

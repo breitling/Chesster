@@ -15,6 +15,7 @@ import { Database } from '../Models/Database';
 import { FileselectionComponent } from "../fileselection/fileselection.component";
 import { DialogModule } from 'primeng/dialog';
 import { Message, MessageModule } from 'primeng/message';
+import { SettingsService } from '../Services/SettingsService.service';
 
 @Component({
     selector: 'app-databases',
@@ -42,9 +43,11 @@ export class DatabasesComponent implements OnInit {
     showMessages : boolean = false;
     databaseExists : boolean = false;
 
+    public dbroot : string;
+
     messages = signal<any []>([]);
 
-    constructor(private dataService : DataService) {
+    constructor(private dataService : DataService, private settingsService : SettingsService) {
         this.databases = [];
         this.messages.set([]);
 
@@ -55,9 +58,13 @@ export class DatabasesComponent implements OnInit {
         this.name = '';
         this.path = '';
         this.notes = '';
+        this.dbroot = '/';
+
+        this.settingsService.load();
     }
 
     public ngOnInit() {
+        this.dbroot = this.settingsService.getDbRoot();
         this.getDatabases();
     }
 

@@ -25,7 +25,6 @@ export class UpdateBoxComponent {
     @Input() public game : Game;
     @Input() public title : string;
 
-    @Output() preloadEvent = new EventEmitter<Game>();
     @Output() cancelEvent = new EventEmitter<number>();
 
     public database : Database;
@@ -79,10 +78,6 @@ export class UpdateBoxComponent {
     public cancel() {
         this.cancelEvent.emit(0);
     } 
-
-    public load() {
-        this.preloadEvent.emit(this.game);
-    }
 
 //  PRIVATE METHODS
 

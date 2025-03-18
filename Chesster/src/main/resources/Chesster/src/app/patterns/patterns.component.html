@@ -65,9 +65,14 @@
                 {{selectedPattern.source}}<br>
                 {{selectedPattern.notes}}<br>
                 {{selectedPattern.created}}<br>
-                <br>
-                <p-button [style]="{'position':'absolute','left':'76rem'}" icon="pi pi-sync" (click)="flipboard()"></p-button>
-                <ng2-chessboard #board2 [(position)]="selectedPattern.fen" [(boardWidth)]="boardWidth"></ng2-chessboard>
+            </div>
+            <div class="flex flex-row">
+                <div class="p-2">
+                    <ng2-chessboard #board2 [(position)]="selectedPattern.fen" [(boardWidth)]="boardWidth"></ng2-chessboard>
+                </div>
+                <div class="flex flex-column p-2">
+                    <p-button icon="pi pi-sync" (click)="flipboard()"></p-button>
+                </div>
             </div>
             <div class="m-2" *ngIf="showButtons === false">
                 <p-button icon="pi pi-chevron-circle-right" size="small" [rounded]="true" [text]="true" (click)="showButtons = true;"/>

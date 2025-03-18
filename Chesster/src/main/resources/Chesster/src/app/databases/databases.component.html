@@ -76,6 +76,6 @@
     </div>
 
     <p-dialog header="Select File" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem', overflow: 'hidden' }">
-        <fileSelection (selectedFile)="setSelectedFile($event)"></fileSelection>
+        <fileSelection [root]="dbroot" (selectedFile)="setSelectedFile($event)"></fileSelection>
     </p-dialog>
 </div>

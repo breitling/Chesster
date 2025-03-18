@@ -36,7 +36,6 @@
             <p-button (click)="saveGame()" *ngIf="game.id.length === 0">Save</p-button>&nbsp;
             <p-button severity="success" (click)="updateGame()" *ngIf="game.id.length > 0">Update</p-button>&nbsp;
             <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
-            <p-button severity="info" (click)="load()">Load Moves</p-button>&nbsp;
         </div>
     </div>
     <div class="flex-row p-2" *ngIf="!database">
