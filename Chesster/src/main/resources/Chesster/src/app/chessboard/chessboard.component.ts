@@ -37,7 +37,7 @@ export class ChessboardComponent implements OnInit, AfterViewInit {
     private _showNotation:  Boolean = true;
     private _draggable:     Boolean = false;
     private _dropOffBoard:  string  = 'snapback';
-    private _pieceTheme:    any     = 'assets/img/defaults/{piece}.png';
+    private _pieceTheme:    any     = 'assets/img/alpha/{piece}.png';
     private _moveSpeed:     any     = 200;
     private _snapbackSpeed: any     = 500;
     private _snapSpeed:     any     = 100;

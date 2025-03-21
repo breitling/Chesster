@@ -105,6 +105,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public saveOrUpdate : string = 'Save';
     public showVariations : boolean = false;
+    public variationToggleText : string = 'Show Variations';
     public loadingmoves : boolean = false;
     public tabindex : number = 0;
 
@@ -262,6 +263,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.enginescore = 0;
 
         this.showVariations = false;
+        this.variationToggleText = 'Show Variations';
         this.currentVariation = this.noVariation;
         this.saveOrUpdate = 'Save';
     }
@@ -349,6 +351,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public load() {
         this.loadingmoves = true;
+        this.showVariations = false;
+        this.variationToggleText = 'Show Variations';
     }
 
     public loadMoves() {
@@ -358,6 +362,16 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public cancel() {
         this.loadingmoves = false;
+    }
+
+    public variationToggle() {
+        if (this.showVariations) {
+            this.showVariations = false;
+            this.variationToggleText = 'Show Variations';
+        } else  {
+            this.showVariations = true;
+            this.variationToggleText = 'Hide Variations';
+        }
     }
 
     public makeVariation(v: Variation) {
@@ -371,6 +385,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
             this.board.position = f;
             this.tabindex = 0;
             this.showVariations = true;
+            this.variationToggleText = 'Hide Variations';
         } else {
             this.messages.set([{ severity : 'warn', text: 'Variation already exists'}]);
         }
@@ -393,8 +408,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
             if (this.game.variations[n].index === 0)
                 count++;
 
-        if (count === this.game.variations.length)
+        if (count === this.game.variations.length) {
             this.showVariations = false;
+            this.variationToggleText = 'Show Variations';
+        }
     }
 
     public newVariation() {
@@ -414,6 +431,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
             this.game.variations[index] = v;
             this.currentVariation = v.index;
             this.showVariations = true;
+            this.variationToggleText = 'Hide Variations';
 
             const f = this.board.startVariation(v.fen);
             this.board.position = f;
@@ -520,8 +538,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
         //  this.restart();
             const moves = g.moves.trim();
             const notation = moves.split(' ');
-            const chess = new Chess();
+//          const chess = new Chess();
 
+            this.restart();
             let turn = 1;
 
             console.log('Doing moves...');
@@ -529,15 +548,15 @@ export class BoardComponent implements OnInit, AfterViewInit {
             if (moves.startsWith('1. ')) {
                 for (var i = 0; i < notation.length-1; i = i+3) {
                     const w = notation[i+1];
-                    chess.move(w);
-                    const wfen = chess.fen();
+                    this.board.move(w);
+                    const wfen = this.board.fen();
 
                     let bfen = '';
                     let b = notation[i+2];
 
                     if (b && b.charAt(0) != '1' && b.charAt(0) != '0' && b.charAt(0) != '*') {
-                        chess.move(b);
-                        bfen = chess.fen();
+                        this.board.move(b);
+                        bfen = this.board.fen();
                     } else {
                         b = '';
                     }
@@ -552,15 +571,15 @@ export class BoardComponent implements OnInit, AfterViewInit {
                     const parts = notation[i].split('.');
 
                     const w = parts[1];
-                    chess.move(w);
-                    const wfen = chess.fen();
+                    this.board.move(w);
+                    const wfen = this.board.fen();
 
                     let bfen = '';
                     let b = notation[i+1];
 
                     if (b && b.charAt(0) != '1' && b.charAt(0) != '0' && b.charAt(0) != '*') {
-                        chess.move(b);
-                        bfen = chess.fen();
+                        this.board.move(b);
+                        bfen = this.board.fen();
                     } else {
                         b = '';
                     }
@@ -586,6 +605,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 const f = this.board.startVariation(v.fen);
 
                 this.showVariations = true;
+                this.variationToggleText = 'Hide Variations';
 
                 this.dump(vary);
             });
@@ -729,6 +749,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public addVariation(event : MenuItemCommandEvent) {
         this.showVariations = true;
+        this.variationToggleText = 'Hide Variations';
 
         if (this.selectedMove) {
             const data  = this.selectedMove;

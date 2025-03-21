@@ -31,7 +31,7 @@ export class ChessPositionComponent implements OnInit {
             this.board.position(value, true);
     }
 
-     @Output() positionChange : EventEmitter<any> = new EventEmitter<any>();
+    @Output() positionChange : EventEmitter<any> = new EventEmitter<any>();
 
 //  PUBLIC METHODS
 
@@ -44,7 +44,7 @@ export class ChessPositionComponent implements OnInit {
     }
 
     public start() {
-        this.board.position('start');
+        this.board.position('start', true);
     }
 
     public fen() : string {
@@ -57,10 +57,10 @@ export class ChessPositionComponent implements OnInit {
         this.board = ChessBoard('ng2-position', {
             'draggable': true,
             'sparePieces': true,
-            'showNotation': false,
+            'showNotation': true,
             'dropOffBoard': 'trash',
-            'pieceTheme': 'assets/img/defaults/{piece}.png',
-            'position': this._position
+            'pieceTheme': 'assets/img/alpha/{piece}.png',
+            'position': this._position,
         });
     }
 }

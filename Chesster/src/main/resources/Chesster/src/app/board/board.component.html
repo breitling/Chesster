@@ -115,6 +115,7 @@
             <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
             <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
             <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;&nbsp;&nbsp;
+            <p-button (click)="variationToggle()">{{variationToggleText}}</p-button>&nbsp;
             <p-button (click)="load()" tooltipPosition="top" pTooltip="Load Moves">Load Moves</p-button>&nbsp;
             <span *ngIf="database">
                 <p-button *ngIf="this.game.id !== ''" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>
