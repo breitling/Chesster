@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { SplitterModule } from 'primeng/splitter';
 
 import { ChessboardComponent } from "../chessboard/chessboard.component";
 import { ConfirmationService } from 'primeng/api';
@@ -22,7 +23,7 @@ import { ConfirmationService } from 'primeng/api';
     selector: 'app-patterns',
     standalone: true,
     imports: [CommonModule, FlexModule, ButtonModule, TableModule, FormsModule, MessageModule, TooltipModule, ChessPositionComponent, SelectModule,
-              ConfirmDialogModule, PanelModule, InputTextModule, TextareaModule, ChessboardComponent],
+              ConfirmDialogModule, PanelModule, InputTextModule, TextareaModule, ChessboardComponent, SplitterModule],
     templateUrl: './patterns.component.html',
     styleUrl: './patterns.component.scss',
     providers: [ConfirmationService]

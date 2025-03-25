@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { TooltipModule } from 'primeng/tooltip';
 import { FileUploadModule } from 'primeng/fileupload';
+import { SplitterModule } from 'primeng/splitter';
 
 import { DataService } from '../Services/DataService.service';
 import { Database } from '../Models/Database';
@@ -21,7 +22,7 @@ import { SettingsService } from '../Services/SettingsService.service';
     selector: 'app-databases',
     standalone: true,
     imports: [CommonModule, ButtonModule, TableModule, InputTextModule, TextareaModule, FormsModule, AutoFocusModule, TooltipModule,
-              FileUploadModule, FileselectionComponent, DialogModule, MessageModule],
+              FileUploadModule, FileselectionComponent, DialogModule, MessageModule, SplitterModule],
     providers: [],
     templateUrl: './databases.component.html',
     styleUrl: './databases.component.scss'
@@ -152,6 +153,10 @@ export class DatabasesComponent implements OnInit {
     public saveAndImport() {
         this.save();
         this.import();
+    }
+
+    public cancel() {
+        this.adding = false;
     }
 
     public update() {

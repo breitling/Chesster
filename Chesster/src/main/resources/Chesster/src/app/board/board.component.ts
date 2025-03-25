@@ -119,9 +119,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.enginescore = 0;
         this.mate = '';
 
-        this.game = dataService.createGame();
+        this.game = dataService.getPreloadedGame();
         this.database = dataService.getDatabase();
         this.engineName = this.dataService.engines()[1].name;
+        console.log('B1`:' + this.game.id);
     }
 
     ngOnInit() {
@@ -135,13 +136,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
         if (this.dataService.doPreload()) {
             console.log('Doing preload...');
-            this.game = this.dataService.getPreloadedGame();
             this.playertop.name = this.game.black;
             this.playertop.rating = Number(this.game.blackELO);
             this.playerbottom.name = this.game.white;
             this.playerbottom.rating = Number(this.game.whiteELO);
             this.preloadGame(this.game);
         }
+            
+        console.log('B2:' + this.game.id);
     }
 
 //  BUTTON CALLBACKS
@@ -463,8 +465,12 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
                 v.moveCount = 0;
                 v.fen = v.startingFen;
+                v.turn = data.index + 1;
+                v.side = v.moves.includes('. ...') ? Sides.BLACK : Sides.WHITE;
                 this.board.selectVariation(v.fen);
                 this.board.position = v.fen;
+
+                this.game.variations[data.index] = v;
             }
         }
     }
@@ -536,11 +542,11 @@ export class BoardComponent implements OnInit, AfterViewInit {
         if (this.moves.length === 0) {
             console.log('Starting preload...');
         //  this.restart();
+            this.board.reset();
             const moves = g.moves.trim();
             const notation = moves.split(' ');
-//          const chess = new Chess();
+        //  const chess = new Chess();
 
-            this.restart();
             let turn = 1;
 
             console.log('Doing moves...');
@@ -591,24 +597,28 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 }
             }
 
-            vs.forEach(v => {
-                const vary = this.dataService.createVariation(v.index);
+            console.log('Doing variations...');
 
-                vary.moveCount = 0;
-                vary.fen = v.fen;
-                vary.startingFen = v.fen;
-                vary.moves = v.moves.replaceAll("  "," ");  // hack to cure an issue with extra spaces in variation move text
-                vary.turn = vary.index + 1;
-                vary.side = (vary.moves.indexOf('...') > 0) ? Sides.BLACK : Sides.WHITE;
+            if (vs && vs.length > 0) {
+                vs.forEach(v => {
+                    const vary = this.dataService.createVariation(v.index);
 
-                this.game.variations[v.index] = vary;
-                const f = this.board.startVariation(v.fen);
+                    vary.moveCount = 0;
+                    vary.fen = v.fen;
+                    vary.startingFen = v.fen;
+                    vary.moves = v.moves.replaceAll("  "," ");  // hack to cure an issue with extra spaces in variation move text
+                    vary.turn = vary.index + 1;
+                    vary.side = (vary.moves.indexOf('...') > 0) ? Sides.BLACK : Sides.WHITE;
 
-                this.showVariations = true;
-                this.variationToggleText = 'Hide Variations';
+                    this.game.variations[v.index] = vary;
+                    const f = this.board.startVariation(v.fen);
 
-                this.dump(vary);
-            });
+                    this.showVariations = true;
+                    this.variationToggleText = 'Hide Variations';
+                });
+            }
+            
+            console.log('Done.');
 
             this.messages.set([{ severity : 'success', text: 'Done preloading game.'}]);
         } else {
@@ -617,7 +627,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public changeTab(n: number) {
-        console.log('change to tab ' + n);
+    //  console.log('change to tab ' + n);
         this.tabindex = n;
     }
     

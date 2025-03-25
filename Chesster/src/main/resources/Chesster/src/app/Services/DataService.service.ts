@@ -86,7 +86,7 @@ export class DataService {
         if (this.preloadedGame != undefined)
             return this.preloadedGame;
         else
-            throw new Error('no preloaded games set!');
+            return this.createGame();
     }
 
     public unsetPreload() {

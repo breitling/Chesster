@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
+import { SplitterModule } from 'primeng/splitter';
 
 import { ChessEngine } from '../Models/chessengine';
 import { DataService } from '../Services/DataService.service';
@@ -9,7 +10,7 @@ import { DataService } from '../Services/DataService.service';
 @Component({
     selector: 'app-chessengines',
     standalone: true,
-    imports: [CommonModule,ButtonModule],
+    imports: [CommonModule,ButtonModule,SplitterModule],
     templateUrl: './chessengines.component.html',
     styleUrl: './chessengines.component.scss',
     providers: [DataService]

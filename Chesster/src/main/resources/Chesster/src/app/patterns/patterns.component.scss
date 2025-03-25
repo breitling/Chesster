@@ -1,29 +1,20 @@
-.box {
-    width: 44%;
+.tablebox {
+    width: 100%;
     height: 100%;
+    border: 0px solid black;
 }
 
-.databox {
-    width: 56%;
+.box {
+    width: 100%;
     height: 100%;
+    border: 0px solid black;
 }
 
 .addbox {
+    width: 100%;
+    height: 100%;
+    border: 0px solid black;
     z-index: 100;
-    width: 100%;
-    height: 100%;
-}
-
-.viewbox {
-    width: 100%;
-    height: 100%;
-}
-
-.startbox {
-    width: 54rem;
-    height: 58.75rem;
-    line-height: 56rem;
-    text-align: center;
 }
 
 .new-title {

@@ -1,12 +1,7 @@
-<div class="main flex flex-row">
-    <div class="box m-1">
-        <div class="block m-2">
+<p-splitter [panelSizes]="[45, 55]" [style]="{ height: '100%' }" panelStyleClass="panels">
+    <ng-template #panel>
+        <div class="tablebox flex-column p-2" *ngIf="database">
             <h3>Games and Positions:</h3>
-        </div>
-        <div class="block m-2" *ngIf="!database">
-            Please select a database...
-        </div>
-        <div class="block m-2" *ngIf="database">
             <h3>{{database.notes}} - {{games.length}} games</h3>
             <p-table #dbtable id="games" [value]="games" selectionMode="single" [(selection)]="selectedGame" dataKey="id" 
                         [scrollable]="true"  scrollHeight="886px" (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" 
@@ -29,62 +24,74 @@
                 </ng-template>
             </p-table>
         </div>
-    </div>
+    </ng-template>
 
-    <div class="databox flex border-1 border-round-lg m-1" style="z-index: 100;" *ngIf="database">
-        <p-panel *ngIf="selectedGame">
-            <h3 class="new-title">Selected Game</h3>
-            <div class="p-2">
-                <label for="white">White:</label>
-                <input type="text" #white pInputText id="white" [(ngModel)]="selectedGame.white"/> {{selectedGame.whiteELO}}
+    <ng-template #panel>
+        <div class="box flex p-2" *ngIf="database">
+            <div *ngIf="selectedGame">
+                <h3 class="new-title">Selected Game</h3>
+                <div class="flex-column p-2">
+                    <label for="white">White:</label>
+                    <input type="text" #white pInputText id="white" [(ngModel)]="selectedGame.white"/>
+                    <input type="text" #white pInputText id="whiteelo" [(ngModel)]="selectedGame.whiteELO" style="width: 4rem"/>
+                </div>
+                <div class="flex-column p-2">
+                    <label for="black">Black:</label>
+                    <input type="text" #black pInputText id="black" [(ngModel)]="selectedGame.black"/>
+                    <input type="text" #black pInputText id="blackelo" [(ngModel)]="selectedGame.blackELO" style="width: 4rem"/>
+                </div>
+                <div class="p-2">
+                    <label for="result">Result:</label>
+                    <input type="text" pInputText id="result" [(ngModel)]="selectedGame.result"/>
+                </div>
+                <div class="p-2">
+                    <label for="site">Site:</label>
+                    <input type="text" pInputText id="site" [(ngModel)]="selectedGame.site"/>
+                </div>
+                <div class="p-2">
+                    <label for="event">Event:</label>
+                    <input type="text" pInputText id="event" [(ngModel)]="selectedGame.event"/>
+                </div>
+                <div class="p-2">
+                    <label for="date">Date:</label>
+                    <input type="text" pInputText id="date" [(ngModel)]="selectedGame.date"/>
+                </div>
+                <div class="p-2">
+                    <label for="count">Move Count:</label>
+                    <input type="text" pInputText id="count" [(ngModel)]="selectedGame.moveCount"/>
+                </div>
+                <div class="p-2">
+                    <textarea rows="15" cols="100" pInputTextarea  [(ngModel)]="selectedGame.moves"></textarea>
+                </div>
+                <div class="p-2">
+                    <p-button (click)="load()">Load to Board</p-button>&nbsp;
+                    <p-button severity="success" (click)="update()">Update</p-button>&nbsp;
+                    <p-button severity="danger" (click)="delete()">Delete</p-button>&nbsp;
+                </div>
+                <div class="card m-5">
+                    @for (message of messages(); track message; ) {
+                        <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+                    }
+                </div>
             </div>
-            <div class="p-2">
-                <label for="black">Black:</label>
-                <input type="text" pInputText id="black" [(ngModel)]="selectedGame.black"/> {{selectedGame.blackELO}}
+        
+            <div style="margin: auto auto; border: 1px solid darkgreen;">
+                <div class="filterbox flex-column" *ngIf="!selectedGame">
+                    <h3 class="new-title"> Filter Games by Position: </h3>
+                    <div class="filterboxbox">
+                        <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
+                        <p-button (click)="find()">Find Position</p-button>&nbsp;
+                        <p-button (click)="start()">Start Position</p-button>&nbsp;
+                        <p-button (click)="clear()">Clear</p-button>
+                    </div>
+                </div>
             </div>
-            <div class="p-2">
-                <label for="result">Result:</label>
-                <input type="text" pInputText id="result" [(ngModel)]="selectedGame.result"/>
-            </div>
-            <div class="p-2">
-                <label for="site">Site:</label>
-                <input type="text" pInputText id="site" [(ngModel)]="selectedGame.site"/>
-            </div>
-            <div class="p-2">
-                <label for="event">Event:</label>
-                <input type="text" pInputText id="event" [(ngModel)]="selectedGame.event"/>
-            </div>
-            <div class="p-2">
-                <label for="date">Date:</label>
-                <input type="text" pInputText id="date" [(ngModel)]="selectedGame.date"/>
-            </div>
-            <div class="p-2">
-                <label for="count">Move Count:</label>
-                <input type="text" pInputText id="count" [(ngModel)]="selectedGame.moveCount"/>
-            </div>
-            <div class="p-2">
-                <textarea rows="15" cols="100" pInputTextarea  [(ngModel)]="selectedGame.moves"></textarea>
-            </div>
-            <div class="p-2">
-                <p-button (click)="load()">Load to Board</p-button>&nbsp;
-                <p-button severity="success" (click)="update()">Update</p-button>&nbsp;
-                <p-button severity="danger" (click)="delete()">Delete</p-button>&nbsp;
-            </div>
-            <div class="card m-5">
-                @for (message of messages(); track message; ) {
-                    <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
-                }
-            </div>
-        </p-panel>
+        </div>
 
-        <p-panel class="filterbox" *ngIf="!selectedGame">
-            <h3 class="new-title"> Filter Games by Position: </h3>
-            <div class="filterboxbox">
-                <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
-                <p-button (click)="find()">Find Position</p-button>&nbsp;
-                <p-button (click)="start()">Start Position</p-button>&nbsp;
-                <p-button (click)="clear()">Clear</p-button>
+       <div class="box" *ngIf="!database">
+            <div class="box flex align-items-center justify-content-center">
+                Please Select a Database.
             </div>
-        </p-panel>
-    </div>
-</div>
+        </div>
+    </ng-template>
+</p-splitter>

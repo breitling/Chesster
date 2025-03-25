@@ -1,6 +1,6 @@
-<div class="main flex flex-row">
-    <div class="box m-1">
-        <div class="block m-2">
+<p-splitter [panelSizes]="[42, 58]" [style]="{ height: '100%' }" panelStyleClass="panels">
+    <ng-template #panel>
+        <div class="tablebox block p-3">
             <h3>Patterns:<span style="float:right;">{{count}} found</span></h3>
             <p-table #dbtable id="patterns" [value]="patterns" selectionMode="single" [(selection)]="selectedPattern" dataKey="id" 
                         (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" 
@@ -28,37 +28,35 @@
                 }
             </div>
         </div>
-    </div>
+    </ng-template>
 
-    <div class="databox flex border-1 border-round-lg m-1">
-        <p-panel *ngIf="adding" class="addbox">
-            <div class="w-100">
-                <h3 class="new-title">New Pattern</h3>
-                <div class="flex flex-row">
-                    <div class="p-2">
-                        <ng2-chessposition #board1 [(position)]="chessPositionBoard"></ng2-chessposition>
-                    </div>
-                    <div class="flex flex-column mt-6">
-                        <p-button class="p-1" severity="info" (click)="start(1)">Start&nbsp;Position</p-button>
-                        <p-button class="p-1" severity="info" (click)="clear(1)">Clear</p-button>
-                    </div>
-                    <div class="flex flex-column mt-6 p-2">
-                        <input type="text" pInputText placeholder="Title" [(ngModel)]="pattern.title">
-                        <textarea rows="3" cols="30" pInputTextarea placeholder="Moves" [(ngModel)]="pattern.moves"></textarea>
-                        <textarea rows="3" cols="30" pInputTextarea placeholder="Notes" [(ngModel)]="pattern.notes"></textarea>
-                        <input type="text" pInputText placeholder="Source" [(ngModel)]="pattern.source">
-                        <input type="text" pInputText placeholder="Date" [(ngModel)]="pattern.created">
-                        <p-select [options]="turns" [(ngModel)]="pattern.turn" placeholder="Whose Turn is It?"/>
-                    </div>
+    <ng-template #panel>
+        <div *ngIf="adding" class="addbox p-3">
+            <h3 class="new-title">New Pattern</h3>
+            <div class="flex flex-row">
+                <div class="p-2">
+                    <ng2-chessposition #board1 [(position)]="chessPositionBoard"></ng2-chessposition>
                 </div>
-                <div>
-                    <p-button (click)="addPattern()">Add Pattern</p-button> &nbsp;
-                    <p-button severity="warn" (click)="cancel(false)">Cancel</p-button> &nbsp;
+                <div class="flex flex-column mt-6">
+                    <p-button class="p-1" severity="info" (click)="start(1)">Start&nbsp;Position</p-button>
+                    <p-button class="p-1" severity="info" (click)="clear(1)">Clear</p-button>
+                </div>
+                <div class="flex flex-column mt-6 p-2">
+                    <input type="text" pInputText placeholder="Title" [(ngModel)]="pattern.title">
+                    <textarea rows="3" cols="30" pInputTextarea placeholder="Moves" [(ngModel)]="pattern.moves"></textarea>
+                    <textarea rows="3" cols="30" pInputTextarea placeholder="Notes" [(ngModel)]="pattern.notes"></textarea>
+                    <input type="text" pInputText placeholder="Source" [(ngModel)]="pattern.source">
+                    <input type="text" pInputText placeholder="Date" [(ngModel)]="pattern.created">
+                    <p-select [options]="turns" [(ngModel)]="pattern.turn" placeholder="Whose Turn is It?"/>
                 </div>
             </div>
-        </p-panel>
+            <div>
+                <p-button (click)="addPattern()">Add Pattern</p-button> &nbsp;
+                <p-button severity="warn" (click)="cancel(false)">Cancel</p-button> &nbsp;
+            </div>
+        </div>
     
-        <p-panel *ngIf="selectedPattern && adding === false && editing === false" class="viewbox p-1">
+        <div *ngIf="selectedPattern && adding === false && editing === false" class="box p-3">
             <h4>{{selectedPattern.title}}<br></h4>
             <div>
                 {{selectedPattern.moves}}<br>
@@ -84,9 +82,9 @@
                 <p-button icon="pi pi-chevron-circle-left" size="small" [rounded]="true" [text]="true" (click)="showButtons = false;"/>
             </div>
             <p-confirmdialog/>
-        </p-panel>
+        </div>
 
-        <p-panel *ngIf="editing" class="addbox">
+        <div *ngIf="editing" class="addbox p-3">
             <div class="w-100">
                 <h3 class="new-title">Edit Pattern</h3>
                 <div class="flex flex-row">
@@ -112,12 +110,12 @@
                     <p-button severity="warn" (click)="cancel(false)">Cancel</p-button> &nbsp;
                 </div>
             </div>
-        </p-panel>
+        </div>
 
-        <p-panel *ngIf="adding == false && selectedPattern == undefined">
-            <div class="startbox m-1">
+        <div class="box" *ngIf="adding == false && selectedPattern == undefined">
+            <div class="box flex align-items-center justify-content-center">
                 Create a New Pattern or Select an Existing One.
             </div>
-        </p-panel>
-    </div>
-</div>
+        </div>
+    </ng-template>
+</p-splitter>

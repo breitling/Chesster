@@ -9,6 +9,7 @@ import { Message } from 'primeng/message';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { PanelModule } from 'primeng/panel';
+import { SplitterModule } from 'primeng/splitter';
 
 import { ChessPositionComponent } from "../chessposition/chessposition.component";
 import { DataService } from '../Services/DataService.service';
@@ -17,7 +18,7 @@ import { Database } from '../Models/Database';
 @Component({
     selector: 'app-games',
     standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,ChessPositionComponent,PanelModule],
+    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,ChessPositionComponent,PanelModule,SplitterModule],
     templateUrl: './games.component.html',
     styleUrl: './games.component.scss'
 })
@@ -57,6 +58,7 @@ export class GamesComponent implements OnInit {
     public onRowSelect(event: any) {
         this.dataService.setSelectedGame(this.selectedGame);
         this.dataService.unsetPreload();
+        console.log('G:' + this.selectedGame.id);
     }
 
     public onRowUnselect(event: any) {

@@ -1,26 +1,27 @@
-.main {
+.tablebox {
     width: 100%;
-    height: 99%;
+    height: 100%;
+    border: 0px solid black;
 }
 
 .box {
-    width: 44%;
+    width: 100%;
     height: 100%;
-}
-
-.databox {
-    width: 56%;
-    height: 100%;
+    border: 0px solid black;
+    z-index: 100;
 }
 
 .filterbox {
-    width: 100%;
-    height: 100%;
+    width: 20.5rem;
+    height: 32rem;
+    border: 0px solid black;
+    padding: 10px;
 }
 
 .filterboxbox {
     margin-left: auto;
     margin-right: auto;
+    border: 0px solid black;
 }
 
 .new-title {

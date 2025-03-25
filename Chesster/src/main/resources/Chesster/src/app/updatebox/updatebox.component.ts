@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, signal, SimpleChanges } from '@angular/core';
 import { Game } from '../Models/Game';
 import { CommonModule } from '@angular/common';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -20,7 +20,7 @@ import { Variation } from '../Models/Variation';
     styleUrl: './updatebox.component.scss',
     providers: [MessageService]
 })
-export class UpdateBoxComponent {
+export class UpdateBoxComponent implements OnChanges {
 
     @Input() public game : Game;
     @Input() public title : string;
@@ -35,6 +35,10 @@ export class UpdateBoxComponent {
         this.title = 'Save';
         this.database = dataService.getDatabase();
         this.game = dataService.createGame();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        console.log('U:' + this.game.id);
     }
 
 //  CALLBACKS

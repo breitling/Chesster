@@ -1,13 +1,15 @@
 <h3 class="new-title"> {{title}} Game </h3>
 <div class="databox flex p-1">
     <div class="flex-row border-1 border-round-lg p-2" *ngIf="database" style="z-index: 100;">
-        <div class="p-2">
+        <div class="flex-column p-2">
             <label for="white">White:</label>
-            <input type="text" #white pInputText id="white" [(ngModel)]="game.white"/> {{game.whiteELO}}
+            <input type="text" #white pInputText id="white" [(ngModel)]="game.white"/>
+            <input type="text" #white pInputText id="whiteelo" [(ngModel)]="game.whiteELO" style="width: 4rem"/>
         </div>
-        <div class="p-2">
+        <div class="flex-column p-2">
             <label for="black">Black:</label>
-            <input type="text" pInputText id="black" [(ngModel)]="game.black"/> {{game.blackELO}}
+            <input type="text" pInputText id="black" [(ngModel)]="game.black"/>
+            <input type="text" pInputText id="blackelo" [(ngModel)]="game.blackELO" style="width: 4rem"/>
         </div>
         <div class="p-2">
             <label for="result">Result:</label>

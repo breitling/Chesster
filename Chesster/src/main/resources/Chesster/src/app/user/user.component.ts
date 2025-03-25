@@ -9,6 +9,7 @@ import { Message } from 'primeng/message';
 import { TableModule } from 'primeng/table';
 import { SelectModule } from 'primeng/select';
 import { Popover, PopoverModule } from 'primeng/popover';
+import { SplitterModule } from 'primeng/splitter';
 
 import { DataService } from '../Services/DataService.service';
 import { SettingsService } from '../Services/SettingsService.service';
@@ -21,7 +22,7 @@ interface TimeClass {
 @Component({
     selector: 'app-user',
     standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,FormsModule,InputTextModule,SelectModule,Message,PopoverModule],
+    imports: [CommonModule,ButtonModule,TableModule,FormsModule,InputTextModule,SelectModule,Message,PopoverModule,SplitterModule],
     templateUrl: './user.component.html',
     styleUrl: './user.component.scss'
 })

@@ -1,6 +1,6 @@
-<div class="main flex flex-row">
-    <div class="box m-1">
-        <div class="block m-2">
+<p-splitter [panelSizes]="[45, 55]" [style]="{ height: '100%' }" panelStyleClass="panels">
+    <ng-template #panel>
+        <div class="tablebox block p-3">
             <h3>Databases:</h3>
             <p-table #dbtable id="databases" [value]="databases" selectionMode="single" [(selection)]="selectedDatabase" dataKey="id" 
                         (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)" 
@@ -30,17 +30,17 @@
                 }
             </div>
         </div>
-    </div>
+    </ng-template>
 
-    <div class="databox flex border-1 border-round-lg m-1">
-        <div class="w-100 m-3" *ngIf="adding" style="z-index: 100;">
+    <ng-template #panel>
+        <div class="w-100 p-3" *ngIf="adding" style="z-index: 100;">
             <h3 class="new-title">New Database</h3>
             <div class="p-2">
                 <label for="name">Name:</label>
                 <input type="text" pInputText id="name" [(ngModel)]="name"/>
             </div>
             <div class="p-2">
-                <label for="path">Path:</label>
+                <label for="path">Import Path:</label>
                 <input type="text" pInputText id="path" [(ngModel)]="path"/> &nbsp; <p-button icon="pi pi-file" (click)="selectFile()" tooltipPosition="top" pTooltip="Select File"></p-button>
             </div>
             <div class="p-2">
@@ -50,17 +50,18 @@
             <div class="p-2">
                 <p-button (click)="save()">Save</p-button>&nbsp;
                 <p-button (click)="saveAndImport()">Save and Import</p-button>&nbsp;
+                <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
             </div>
         </div>
 
-        <div class="w-100 m-3" *ngIf="updating" style="z-index: 100;">
+        <div class="w-100 p-3" *ngIf="updating" style="z-index: 100;">
             <h3 class="update-title"> Update Database </h3>
             <div class="p-2">
                 <label for="name">Name:</label>
                 <input type="text" pInputText id="name" [(ngModel)]="name"/>
             </div>
             <div class="p-2">
-                <label for="path">Path:</label>
+                <label for="path">Import Path:</label>
                 <input type="text" pInputText id="path" [(ngModel)]="path"/> &nbsp; <p-button icon="pi pi-file" (click)="selectFile()" tooltipPosition="top" pTooltip="Select File"></p-button>
             </div>
             <div class="p-2">
@@ -73,9 +74,15 @@
                 <p-button severity="danger" (click)="delete()">Delete</p-button>&nbsp;
             </div>
         </div>
-    </div>
 
-    <p-dialog header="Select File" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem', overflow: 'hidden' }">
-        <fileSelection [root]="dbroot" (selectedFile)="setSelectedFile($event)"></fileSelection>
-    </p-dialog>
-</div>
+        <div class="box" *ngIf="adding === false && updating === false">
+            <div class="box flex align-items-center justify-content-center">
+                Please Select a Database.
+            </div>
+        </div>
+    </ng-template>
+</p-splitter>
+
+<p-dialog class="p-5" header="Select File" [modal]="true" [(visible)]="visible" [style]="{ width: '50rem', overflow: 'hidden' }">
+    <fileSelection [root]="dbroot" (selectedFile)="setSelectedFile($event)"></fileSelection>
+</p-dialog>

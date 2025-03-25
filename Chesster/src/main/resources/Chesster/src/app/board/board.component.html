@@ -57,7 +57,7 @@
                                                             [pContextMenuRow]="{'move': move, 'color': 1, 'index': move.turn-1 }">{{move.blackMove}}</td>
                                             </tr>
                                         </ng-template>
-                                    </p-table>      
+                                    </p-table>
                                 </div>
                             </div>
                             <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
@@ -100,7 +100,7 @@
                     </p-tabpanel>
 
                     <p-tabpanel [value]="3">
-                        <analysisbox [game]="game" [moves]="getMoves(moves)" (variationEvent)="makeVariation($event)"/>
+                        <analysisbox [game]="game" [moves]="getMoves(moves)" (variationEvent)="makeVariation($event)"></analysisbox>
                     </p-tabpanel>
                 </p-tabpanels>
             </p-tabs>
@@ -116,11 +116,14 @@
             <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
             <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;&nbsp;&nbsp;
             <p-button (click)="variationToggle()">{{variationToggleText}}</p-button>&nbsp;
-            <p-button (click)="load()" tooltipPosition="top" pTooltip="Load Moves">Load Moves</p-button>&nbsp;
+            <p-button (click)="load()" *ngIf="game.id === ''" tooltipPosition="top" pTooltip="Load Moves">Load Moves</p-button>&nbsp;
             <span *ngIf="database">
                 <p-button *ngIf="this.game.id !== ''" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>
                 <p-button *ngIf="this.game.id === ''" (click)="save()" tooltipPosition="top" pTooltip="Save Game">Save</p-button>&nbsp;
                 <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">Database: {{database.ds.name}}</span>
+            </span>
+            <span *ngIf="!database">
+                <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">No Database</span>
             </span>
         </div>
     </div>

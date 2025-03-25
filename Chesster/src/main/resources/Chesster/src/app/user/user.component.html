@@ -1,22 +1,23 @@
-<div class="main flex flex-row">
-    <div class="box" style="z-index: 100;">
-        <div class="block m-2">
+<p-splitter [panelSizes]="[40, 60]" [style]="{ height: '100%' }" panelStyleClass="panels">
+    <ng-template #panel>
+        <div class="box p-2">
             <h3>Hero Information:</h3>
-        </div>
-        <div class="block m-1">
-            <div class="p-1">
-                <label for="account">Chess.com Account: </label>
-                <input type="text" #white pInputText id="white" [(ngModel)]="account"/>
+            <div class="flex-row">
+                <div class="p-2">
+                    <label for="account">Chess.com Account: </label>
+                    <input type="text" #white pInputText id="white" [(ngModel)]="account"/>
+                </div>
+            </div>
+            <div class="card m-5">
+                @for (message of messages(); track message; ) {
+                    <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
+                }
             </div>
         </div>
-        <div class="card m-5">
-            @for (message of messages(); track message; ) {
-                <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
-            }
-        </div>
-    </div>
-    <div class="databox flex border-1 border-round-lg m-1">
-        <div class="w-100 m-5" *ngIf="account.length > 0" style="z-index: 100;">
+    </ng-template>
+
+    <ng-template #panel>
+        <div class="box p-2" *ngIf="account.length > 0">
             <h3 class="new-title"> Import Games From Chess.com </h3>
             <div class="p-2">
                 <label for="year">Year:</label>
@@ -37,7 +38,7 @@
             <div class="flex border-1 border-round-lg m-2 gamebox" *ngIf="games.length > 0">
                 <div class="p-2">
                     <p-table id="cdcgames" [value]="games" [scrollable]="true" scrollHeight="550px" selectionMode="multiple" [(selection)]="selectedGames" 
-                                dataKey="tcn" [tableStyle]="{ 'min-width': '50rem', 'overflow-x': 'hidden' }">
+                                dataKey="tcn" [tableStyle]="{ 'min-width': '58rem', 'overflow-x': 'hidden' }">
                         <ng-template #header>
                             <tr>
                                 <th></th>
@@ -70,11 +71,11 @@
 
             <div class="w-100 p-2">
                 <p *ngIf="database"><b>Database:</b> {{database.ds.name}}</p>
-                <p *ngIf="!database">Please select a database.</p>
+                <p *ngIf="!database">Please Select a Database.</p>
             </div>
         </div>
-    </div>
-</div>
+    </ng-template>
+</p-splitter>
 
 <p-popover #po (onHide)="selectedGame = null">
     <ng-template #content>
