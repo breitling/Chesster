@@ -78,10 +78,10 @@
             <div class="m-2" *ngIf="showButtons">
                 <p-button (click)="editPattern()">Edit</p-button> &nbsp;
                 <p-button severity="warn" (click)="cancel(true)">Cancel</p-button> &nbsp;
-                <p-button (click)="confirmDelete($event)" label="Delete" severity="danger"/> &nbsp;
+                <p-button severity="danger" (click)="confirmDelete($event)" label="Delete"/> &nbsp;
                 <p-button icon="pi pi-chevron-circle-left" size="small" [rounded]="true" [text]="true" (click)="showButtons = false;"/>
             </div>
-            <p-confirmdialog/>
+            <p-confirmdialog  [style]="{ 'padding': '20px' }"/>
         </div>
 
         <div *ngIf="editing" class="addbox p-3">
@@ -114,7 +114,7 @@
 
         <div class="box" *ngIf="adding == false && selectedPattern == undefined">
             <div class="box flex align-items-center justify-content-center">
-                Create a New Pattern or Select an Existing One.
+                Add a New Pattern or Select an Existing One.
             </div>
         </div>
     </ng-template>

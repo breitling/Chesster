@@ -61,28 +61,29 @@
                     <input type="text" pInputText id="count" [(ngModel)]="selectedGame.moveCount"/>
                 </div>
                 <div class="p-2">
-                    <textarea rows="15" cols="100" pInputTextarea  [(ngModel)]="selectedGame.moves"></textarea>
+                    <textarea rows="15" cols="100" pInputTextarea [(ngModel)]="selectedGame.moves"></textarea>
                 </div>
                 <div class="p-2">
-                    <p-button (click)="load()">Load to Board</p-button>&nbsp;
+                    <p-button severity="info" (click)="load()">Load to Board</p-button>&nbsp;
                     <p-button severity="success" (click)="update()">Update</p-button>&nbsp;
-                    <p-button severity="danger" (click)="delete()">Delete</p-button>&nbsp;
+                    <p-button severity="danger" (click)="confirmDelete($event)">Delete</p-button>&nbsp;
                 </div>
-                <div class="card m-5">
+                <div class="flex flex-row m-2">
                     @for (message of messages(); track message; ) {
                         <p-message [severity]="message.severity" [text]="message.text" [closable]="true"/>
                     }
                 </div>
+                <p-confirmdialog [style]="{ 'padding': '10px' }"/> 
             </div>
         
-            <div style="margin: auto auto; border: 1px solid darkgreen;">
-                <div class="filterbox flex-column" *ngIf="!selectedGame">
+            <div style="margin: auto auto; border: 1px solid darkgreen; padding: 10px;" *ngIf="!selectedGame">
+                <div class="filterbox flex-column">
                     <h3 class="new-title"> Filter Games by Position: </h3>
                     <div class="filterboxbox">
                         <ng2-chessposition #board [(position)]="chessPositionBoard"></ng2-chessposition>
                         <p-button (click)="find()">Find Position</p-button>&nbsp;
-                        <p-button (click)="start()">Start Position</p-button>&nbsp;
-                        <p-button (click)="clear()">Clear</p-button>
+                        <p-button severity="info" (click)="start()">Start Position</p-button>&nbsp;
+                        <p-button severity="info" (click)="clear()">Clear</p-button>
                     </div>
                 </div>
             </div>

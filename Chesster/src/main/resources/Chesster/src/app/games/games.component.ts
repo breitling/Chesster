@@ -10,6 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { PanelModule } from 'primeng/panel';
 import { SplitterModule } from 'primeng/splitter';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { ChessPositionComponent } from "../chessposition/chessposition.component";
 import { DataService } from '../Services/DataService.service';
@@ -18,9 +20,10 @@ import { Database } from '../Models/Database';
 @Component({
     selector: 'app-games',
     standalone: true,
-    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,ChessPositionComponent,PanelModule,SplitterModule],
+    imports: [CommonModule,ButtonModule,TableModule,FormsModule,Message,InputTextModule,TextareaModule,ChessPositionComponent,PanelModule,SplitterModule,ConfirmDialogModule],
     templateUrl: './games.component.html',
-    styleUrl: './games.component.scss'
+    styleUrl: './games.component.scss',
+    providers: [ConfirmationService]
 })
 export class GamesComponent implements OnInit {
 
@@ -36,7 +39,7 @@ export class GamesComponent implements OnInit {
     @ViewChild("white") white : ElementRef | undefined;
     @ViewChild("board") board : any;
     
-    constructor(private dataService : DataService) {
+    constructor(private dataService : DataService, private confirmationService: ConfirmationService, ) {
         this.games = [];
         this.database = dataService.getDatabase();
         this.dataService.unsetPreload();
@@ -58,7 +61,6 @@ export class GamesComponent implements OnInit {
     public onRowSelect(event: any) {
         this.dataService.setSelectedGame(this.selectedGame);
         this.dataService.unsetPreload();
-        console.log('G:' + this.selectedGame.id);
     }
 
     public onRowUnselect(event: any) {
@@ -115,12 +117,42 @@ export class GamesComponent implements OnInit {
         );
     }
 
+    public confirmDelete(event: Event) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            icon: 'pi pi-info-circle',
+            message: 'Do you want to delete this game?',
+            header: 'Delete Game',
+            rejectLabel: 'Cancel',
+
+            rejectButtonProps: {
+                label: 'Cancel',
+                severity: 'secondary',
+                outlined: true,
+            },
+            acceptButtonProps: {
+                label: 'Delete',
+                severity: 'danger',
+            },
+
+            accept: () => {
+                if (this.selectedGame) {
+                    this.delete();
+                }
+            },
+            reject: () => {
+                this.messages.set([{ severity: 'error', text: 'Game not deleted' }]);
+            },
+        });
+    }
+
     public delete() {
         const b = this.dataService.deleteGame(this.database.id, this.selectedGame.id);
 
         if (b) {
             this.onRowUnselect(null);
             this.getData();
+            this.selectedGame = this.dataService.getSelectedGame();
             this.messages.set([{ severity : 'success', text: 'Sucessfully deleted game.'}]);
         } else {
             this.messages.set([{ severity : 'error', text: 'Error deleting game.'}]);

@@ -15,9 +15,10 @@ import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { SplitterModule } from 'primeng/splitter';
+import { ConfirmationService } from 'primeng/api';
 
 import { ChessboardComponent } from "../chessboard/chessboard.component";
-import { ConfirmationService } from 'primeng/api';
+
 
 @Component({
     selector: 'app-patterns',

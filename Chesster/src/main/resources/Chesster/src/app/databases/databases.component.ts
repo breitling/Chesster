@@ -10,6 +10,8 @@ import { AutoFocusModule } from 'primeng/autofocus';
 import { TooltipModule } from 'primeng/tooltip';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SplitterModule } from 'primeng/splitter';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { DataService } from '../Services/DataService.service';
 import { Database } from '../Models/Database';
@@ -22,10 +24,10 @@ import { SettingsService } from '../Services/SettingsService.service';
     selector: 'app-databases',
     standalone: true,
     imports: [CommonModule, ButtonModule, TableModule, InputTextModule, TextareaModule, FormsModule, AutoFocusModule, TooltipModule,
-              FileUploadModule, FileselectionComponent, DialogModule, MessageModule, SplitterModule],
-    providers: [],
+              FileUploadModule, FileselectionComponent, DialogModule, MessageModule, SplitterModule, ConfirmDialogModule],
     templateUrl: './databases.component.html',
-    styleUrl: './databases.component.scss'
+    styleUrl: './databases.component.scss',
+    providers: [ConfirmationService]
 })
 export class DatabasesComponent implements OnInit {
 
@@ -48,7 +50,7 @@ export class DatabasesComponent implements OnInit {
 
     messages = signal<any []>([]);
 
-    constructor(private dataService : DataService, private settingsService : SettingsService) {
+    constructor(private dataService : DataService, private settingsService : SettingsService, private confirmationService: ConfirmationService) {
         this.databases = [];
         this.messages.set([]);
 
@@ -121,6 +123,35 @@ export class DatabasesComponent implements OnInit {
 
     public fileExists() : boolean {
         return this.dataService.exists(this.selectedDatabase.ds.path);
+    }
+
+    public confirmDelete(event: Event) {
+        this.confirmationService.confirm({
+            target: event.target as EventTarget,
+            icon: 'pi pi-info-circle',
+            message: 'Do you want to delete this database?',
+            header: 'Delete Database',
+            rejectLabel: 'Cancel',
+
+            rejectButtonProps: {
+                label: 'Cancel',
+                severity: 'secondary',
+                outlined: true,
+            },
+            acceptButtonProps: {
+                label: 'Delete',
+                severity: 'danger',
+            },
+
+            accept: () => {
+                if (this.selectedDatabase) {
+                    this.delete();
+                }
+            },
+            reject: () => {
+                this.messages.set([{ severity: 'error', text: 'Database not deleted' }]);
+            },
+        });
     }
 
     public delete() {
