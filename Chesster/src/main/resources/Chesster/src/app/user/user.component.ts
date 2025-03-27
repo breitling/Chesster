@@ -30,6 +30,7 @@ export class UserComponent implements OnInit {
     public database;
 
     public account : string;
+    public importing: boolean = false;
 
     public year : string;
     public month : string;
@@ -70,6 +71,10 @@ export class UserComponent implements OnInit {
         this.account = this.settingsService.getChessDotComAccount();
     }
 
+    public startImporting() {
+        this.importing = true;
+        this.games = [];
+    }
     public getGames() {
         const tc = (this.timeClass !== undefined) ? this.timeClass.value : 'all';
 

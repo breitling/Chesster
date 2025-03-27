@@ -122,7 +122,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.game = dataService.getPreloadedGame();
         this.database = dataService.getDatabase();
         this.engineName = this.dataService.engines()[1].name;
-        console.log('B1`:' + this.game.id);
+    //  console.log('B1`:' + this.game.id);
     }
 
     ngOnInit() {
@@ -142,8 +142,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
             this.playerbottom.rating = Number(this.game.whiteELO);
             this.preloadGame(this.game);
         }
-            
-        console.log('B2:' + this.game.id);
     }
 
 //  BUTTON CALLBACKS
