@@ -44,7 +44,6 @@ export class NoteBoxComponent implements OnInit, OnChanges {
 
     public ngOnChanges(changes: SimpleChanges): void {
         this.getData();
-        console.log('N:' + this.game.id);
     }
 
 //  CALLBACKS

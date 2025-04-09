@@ -183,13 +183,12 @@ export class ChessboardComponent implements OnInit, AfterViewInit {
   // METHODS
 
     public clear() {
-        this.board.clear; // (this.animation);
+        this.board.clear(this.animation);
     }
 
     public move(notation: string) {
         this.gORv.move(notation);
         this._position = this.game.fen();
-    //  this.board.move(notation);
     }
 
     public fen() : string {
@@ -203,6 +202,12 @@ export class ChessboardComponent implements OnInit, AfterViewInit {
         this.variations = [];
 
         this.gORv.reset();
+    }
+
+    public setChess(fen : string) {
+        console.log(fen);
+        this.game = new Chess(fen);
+        this.gORv = this.game;
     }
 
     public undo() {

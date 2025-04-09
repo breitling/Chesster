@@ -49,7 +49,7 @@ export class SettingsService {
 //  FACTORIES
 
     createSettings() : Settings {
-        return { chessdotcomAccount: '', dbRoot: '', dbName: '' };
+        return { chessdotcomAccount: '', email: '', rating: 400, dbRoot: '', dbName: '' };
     }
     
 //  GETTERS AND SETTERS

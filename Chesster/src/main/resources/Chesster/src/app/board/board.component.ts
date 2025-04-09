@@ -29,15 +29,19 @@ import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
 import { TabsModule } from 'primeng/tabs';
 import { SelectModule } from 'primeng/select';
+import { CheckboxModule } from 'primeng/checkbox';
+
 import { NoteBoxComponent } from '../notebox/notebox.component';
 import { AnalysisBoxComponent } from '../analysisbox/analysisbox.component';
 import { UpdateBoxComponent } from '../updatebox/updatebox.component';
+import { ChessPositionComponent } from "../chessposition/chessposition.component";
 
 @Component({
     selector: 'app-board',
     standalone: true,
-    imports: [CommonModule,FlexLayoutModule,ChessboardComponent,ButtonModule,PlayerBoxComponent,NoteBoxComponent, ProgressBarModule,ToastModule,SelectModule,
-              TableModule,TabsModule,TooltipModule,FormsModule,InputTextModule,TextareaModule,ContextMenuModule,MessageModule,AnalysisBoxComponent, UpdateBoxComponent],
+    imports: [CommonModule, FlexLayoutModule, ChessboardComponent, ButtonModule, PlayerBoxComponent, NoteBoxComponent, ProgressBarModule, ToastModule, 
+              SelectModule,CheckboxModule,TableModule, TabsModule, TooltipModule, FormsModule, InputTextModule, TextareaModule, ContextMenuModule, 
+              MessageModule, AnalysisBoxComponent, UpdateBoxComponent, ChessPositionComponent],
     templateUrl: './board.component.html',
     styleUrl: './board.component.scss',
     providers: [MessageService]
@@ -45,9 +49,10 @@ import { UpdateBoxComponent } from '../updatebox/updatebox.component';
 export class BoardComponent implements OnInit, AfterViewInit {
     public position : string = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 1 0';
 
-    fen : string = 'X';
+    fen : string = '';
     turns : number = 0;
     halfTurns : number = 0;
+    moveOffset : number = 0;
     whoseTurn : number = Sides.WHITE;
     orientation : boolean = true;
     showEvalBar : boolean = false;
@@ -56,6 +61,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
     playerbottom : Player;
 
     @ViewChild('board') board : any;
+    @ViewChild('setupBoard') setupBoard : any;
     @ViewChild('movecm') moveCM : ContextMenu | undefined;
     @ViewChild('analysiscm') analysisCM : ContextMenu | undefined;
     @ViewChild('analysisarea') analysisarea : ElementRef | undefined;
@@ -107,6 +113,12 @@ export class BoardComponent implements OnInit, AfterViewInit {
     public showVariations : boolean = false;
     public variationToggleText : string = 'Show Variations';
     public loadingmoves : boolean = false;
+    public setup : boolean = false;
+    public setupBoardFen : string = '';
+    public setupMove : number = 1;
+    public setupSide : string = 'White';
+    public setupWhiteCastling : string = '';
+    public setupBlackCastling : string = '';
     public tabindex : number = 0;
 
     public messages = signal<any []>([]);
@@ -127,8 +139,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.tabindex = 0;
-        if (!this.database)
-            this.messages.set([{ severity : 'warn', text: 'No databse selected. Saves not available.'}]);
     }
 
     ngAfterViewInit() {
@@ -165,15 +175,15 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public nextMove() {
-        if (this.turns < this.moves.length) {
-            const m = this.moves[this.turns];
+        if ((this.turns - this.moveOffset) < this.moves.length) {
+            const m = this.moves[this.turns - this.moveOffset];
             this.board.position = this.nextFen(m);
         }
     }
 
     public previousMove() {
-        if (this.turns > 0) {
-            const m = this.moves[this.turns-1];
+        if ((this.turns - this.moveOffset) > 0) {
+            const m = this.moves[this.turns - this.moveOffset - 1];
             this.board.position = this.previousFen(m);
         } else {
             this.firstMove();
@@ -189,7 +199,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 this.halfTurns--;
                 this.whoseTurn = 1 - this.whoseTurn;
                 
-                const m = this.moves[this.turns];
+                const m = this.moves[this.turns - this.moveOffset];
                 m.blackMove = '';
                 m.blackFen = '';
             } else {
@@ -261,6 +271,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.whoseTurn = Sides.WHITE;
         this.enginemoves = undefined;
         this.enginescore = 0;
+        this.moveOffset = 0;
 
         this.showVariations = false;
         this.variationToggleText = 'Show Variations';
@@ -306,7 +317,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 values.push(number + (bestmove.color === 'w' ? '. ' : '. ... ') + bestmove.san);
 
                 move.continuation.forEach(m => {
-                    if (m !== '' && chess != null) {
+                    if (m !== '') {
                         let n = chess.moveNumber();
                         let bm = chess.move(m);
 
@@ -349,8 +360,58 @@ export class BoardComponent implements OnInit, AfterViewInit {
         this.game.moves = this.getMoves(this.moves) + this.addResults(this.game);
     }
 
+//  SETUP POSITION CALLBACKS
+
+    public setupPosition() {
+        this.fen = '';
+        this.setupMove = 1;
+        this.setupSide = 'White';
+        this.setup = true;
+        this.setupWhiteCastling = this.setupBlackCastling = '';
+        this.showVariations = false;
+        this.variationToggleText = 'Show Variations';
+        this.loadingmoves = false;
+    }
+
+    public startSetupBoard() {
+        this.setupBoard.start();
+    }
+
+    public clearSetupBoard() {
+        this.setupBoard.clear();
+    }
+
+    public setupFenChanged() {
+        this.setupBoard.position = this.fen;
+        console.log("Got Here");
+    }
+
+    public useSetupBoard() {
+        this.moves = [];
+        this.whoseTurn = this.setupSide === 'White' ? Sides.WHITE : Sides.BLACK;
+        this.turns = this.setupMove - 1;
+        this.moveOffset = this.setupMove - 1;
+        this.halfTurns = 2 * this.turns + (this.whoseTurn === Sides.BLACK ? 1 : 0);
+
+        let fen = this.setupBoard.fen();
+        let castling = this.setupWhiteCastling + this.setupBlackCastling.toLowerCase();
+        fen = fen + ' ' + this.setupSide.charAt(0).toLowerCase() + ' ' + (castling === '' ? '-' : castling) + ' - 0 ' + (this.turns+1);
+        this.board.setChess(fen);
+        this.board.position = fen;
+
+        if (this.whoseTurn === Sides.BLACK)
+            this.moves.push({ turn: this.turns+1, whiteMove: '...', whiteFen: '', blackMove: '', blackFen: '' });
+
+        this.setup = false;
+
+        console.log('Done');
+    }
+
+//  LOAD MOVE CALLBACKS
+
     public load() {
         this.loadingmoves = true;
+        this.setup = false;
         this.showVariations = false;
         this.variationToggleText = 'Show Variations';
     }
@@ -362,7 +423,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public cancel() {
         this.loadingmoves = false;
+        this.setup = false;
     }
+
+//  VARIATION CALLBACKS
 
     public variationToggle() {
         if (this.showVariations) {
@@ -371,6 +435,8 @@ export class BoardComponent implements OnInit, AfterViewInit {
         } else  {
             this.showVariations = true;
             this.variationToggleText = 'Hide Variations';
+            this.setup = false;
+            this.loadingmoves = false;
         }
     }
 
@@ -394,11 +460,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
     public deleteVariation(event : MenuItemCommandEvent) {
         if (this.selectedVariation) {
             const data = this.selectedVariation;
+            const index = data.index;
 
-            if (this.game.variations[data.index].index !== 0) {
-                this.game.variations[data.index] = this.dataService.createVariation(0);
+            console.log('D: ' + index + '/' + this.moveOffset);
+
+            if (this.game.variations[index].index !== 0) {
+                this.game.variations[index] = this.dataService.createVariation(0);
             } else {
-                console.log('Failed to delete variation at ' + data.index);
+                console.log('Failed to delete variation at ' + index);
             }
         }
         
@@ -415,15 +484,17 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
 
     public newVariation() {
-        const index = Number(this.enginemoves?.substring(0, this.enginemoves.indexOf('.')))-1;
+        const index = Number(this.enginemoves?.substring(0, this.enginemoves.indexOf('.'))) - this.moveOffset - 1;
         const side = this.enginemoves?.includes('. ...') ? Sides.BLACK : Sides.WHITE;
+
+        console.log('' + index + '/' + this.moveOffset);
 
         if (this.game.variations[index].index === 0 && this.enginemoves) {
             console.log('Creat variation...');
 
             const v = this.dataService.createVariation(index);
             v.side = side;
-            v.turn = v.index + 1;
+            v.turn = v.index + this.moveOffset + 1;
             v.fen = side === Sides.WHITE ? this.moves[index-1].blackFen : this.moves[index].whiteFen;
             v.startingFen = v.fen;
             v.moves = this.enginemoves;
@@ -457,9 +528,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
     public resetVariation(event : MenuItemCommandEvent) {
         if (this.selectedVariation) {
             const data = this.selectedVariation;
+            const index = data.index - this.moveOffset;
 
-            if (this.game.variations[data.index].index !== 0) {
-                const v = this.game.variations[data.index];
+            if (this.game.variations[index].index !== 0) {
+                const v = this.game.variations[index];
 
                 v.moveCount = 0;
                 v.fen = v.startingFen;
@@ -468,7 +540,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 this.board.selectVariation(v.fen);
                 this.board.position = v.fen;
 
-                this.game.variations[data.index] = v;
+                this.game.variations[index] = v;
             }
         }
     }
@@ -514,10 +586,11 @@ export class BoardComponent implements OnInit, AfterViewInit {
         } else {
             const v = this.game.variations[this.currentVariation];
 
-            if (v.side === Sides.WHITE && v.moves.endsWith('. ') === false)
-                v.moves = v.moves + ' ' + (v.turn) + '.';
-            else
+            if (v.side === Sides.WHITE) {              
                 v.turn++;
+                if (v.moves.endsWith('. ') === false)
+                    v.moves = v.moves + ' ' + (v.turn + this.moveOffset) + '.';
+            }
 
             v.moves = v.moves + ' ' + e;
             v.side = 1 - v.side;
@@ -527,19 +600,14 @@ export class BoardComponent implements OnInit, AfterViewInit {
         }
     }
 
-    public onContextMenu(e : any) {
-    }
-
     public preloadGame(g : Game) {
         console.log(g.moves);
 
         const vs = this.game.variations;
-
         this.game.variations = [];
 
         if (this.moves.length === 0) {
             console.log('Starting preload...');
-        //  this.restart();
             this.board.reset();
             const moves = g.moves.trim();
             const notation = moves.split(' ');
@@ -673,9 +741,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
                 return this.position;
 
             if (this.whoseTurn === Sides.WHITE)
-                return this.moves[this.turns-1].blackFen;
+                return this.moves[this.turns - this.moveOffset - 1].blackFen;
             else
-                return this.moves[this.turns].whiteFen;
+                return this.moves[this.turns - this.moveOffset].whiteFen;
         } else {
             return this.board.fen();
         }
@@ -683,10 +751,11 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
     public getMoves(moves : ChessNotationTurn []) : string {
         let r = '';
-        let n = 0;
+        let m = this.moveOffset;
 
-        for (n = 0; n < moves.length; n++) {
-            r = r.concat((n+1) + '. ' + moves[n].whiteMove + ' ' + moves[n].blackMove + ' ');
+        for (var n = 0; n < moves.length; n++) {
+            r = r.concat('' + m + '. ' + moves[n].whiteMove + ' ' + moves[n].blackMove + ' ');
+            m++;
         }
 
         return r;
@@ -761,25 +830,28 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
         if (this.selectedMove) {
             const data  = this.selectedMove;
+            const index = data.index - this.moveOffset;
 
-            if (this.game.variations[data.index].index === 0) {
-                const v = this.dataService.createVariation(data.index);
+            console.log('A: ' + index + '/' + this.moveOffset);
+
+            if (this.game.variations[index].index === 0) {
+                const v = this.dataService.createVariation(index);
 
                 v.turn = v.index + 1;
-                v.moves = '' + (v.turn) + '. ';
+                v.moves = '' + (v.turn + this.moveOffset) + '. ';
 
                 if (data.color === Sides.BLACK) {
                     v.moves = v.moves + '... ';
-                    v.fen = this.moves[data.index].whiteFen;
+                    v.fen = this.moves[index].whiteFen;
                     v.side = Sides.BLACK;
                 } else {
-                    v.fen = this.moves[data.index-1].blackFen;
+                    v.fen = this.moves[index-1].blackFen;
                     v.side = Sides.WHITE;
                 }
 
                 v.startingFen = v.fen;
 
-                this.game.variations[data.index] = v;
+                this.game.variations[index] = v;
                 this.currentVariation = v.index;
 
                 const f = this.board.startVariation(v.fen);

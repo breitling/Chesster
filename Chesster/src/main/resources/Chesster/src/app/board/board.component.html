@@ -60,6 +60,7 @@
                                     </p-table>
                                 </div>
                             </div>
+
                             <div class="movebox border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap;" *ngIf="showVariations">
                                 <div class="m-1" style="width: auto; max-width: 54rem;">
                                     <p-contextMenu #variationcm [model]="variationItems" [baseZIndex]="1000"/>
@@ -79,13 +80,57 @@
                                     </p-table>
                                 </div>
                             </div>
+
                             <div class="border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap; z-index: 100;" *ngIf="loadingmoves">
+                                <div class="p-2">
+                                    <h3 class="new-title ml-1">Load Moves</h3>
+                                </div>
                                 <div class="p-2">
                                     <textarea rows="25" cols="100" pInputTextarea [(ngModel)]="game.moves"></textarea>
                                 </div>
                                 <div class="p-2">
                                     <p-button (click)="loadMoves()">Load</p-button>&nbsp;
                                     <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
+                                </div>
+                            </div>
+
+                            <div class="border-1 border-round-lg ml-1" style="width: auto; max-width: 54rem; white-space: nowrap; z-index: 100;" *ngIf="setup">
+                                <div class="p-2">
+                                    <h3 class="new-title ml-1">Setup Position</h3>
+                                </div>
+                                <div class="flex flex-row">
+                                    <div class="p-2">
+                                        <ng2-chessposition #setupBoard [(position)]="setupBoardFen"></ng2-chessposition>
+                                    </div>
+                                    <div class="flex flex-column mt-6">
+                                        <p-button class="p-1" severity="info" (click)="startSetupBoard()">Start&nbsp;Position</p-button>
+                                        <p-button class="p-1" severity="info" (click)="clearSetupBoard()">Clear</p-button>
+                                        <div class="mt-6 flex-row p-1">
+                                            <label for="color">Side to Move:</label>
+                                            <p-select [style]="{ 'width': '8rem' }" [options]="['White', 'Black']" [(ngModel)]="setupSide"></p-select>
+                                        </div>
+                                        <div class="flex-row p-1">
+                                            <label for="move">Move:</label>
+                                            <input type="text" pInputText [style]="{ 'width': '3rem' }" [(ngModel)]="setupMove">
+                                        </div>
+                                        <div class="flex-row p-1">
+                                            <label>White Castle:</label>
+                                            <input type="text" pInputText [style]="{ 'width': '3rem' }" [(ngModel)]="setupWhiteCastling"> eg. KQ
+                                        </div>
+                                        <div class="flex-row p-1">
+                                            <label>Black Castle:</label>
+                                            <input type="text" pInputText [style]="{ 'width': '3rem' }" [(ngModel)]="setupBlackCastling">  eg. KQ
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-column">
+                                    <div class="flex flex-column p-2">
+                                        <input type="fen" pInputText placeholder="Paste FEN here" style="width: 40rem;" [(ngModel)]="fen" (change)="setupFenChanged()">
+                                    </div>
+                                    <div class="flex flex-row p-2">
+                                        <p-button severity="success" (click)="useSetupBoard()">OK</p-button>&nbsp;
+                                        <p-button severity="warn" (click)="cancel()">Cancel</p-button>&nbsp;
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -114,14 +159,18 @@
             <p-button icon="pi pi-forward" (click)="nextMove()" tooltipPosition="top" pTooltip="Next Move"></p-button>&nbsp;
             <p-button icon="pi pi-step-forward" (click)="lastMove()" tooltipPosition="top" pTooltip="Last Move"></p-button>&nbsp;
             <p-button icon="pi pi-delete-left" (click)="undoLastMove()" tooltipPosition="top" pTooltip="Undo Last Move"></p-button>&nbsp;&nbsp;&nbsp;
-            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;&nbsp;&nbsp;
+            <p-button icon="pi pi-bullseye" (click)="analysis()" tooltipPosition="top" pTooltip="Analysis"></p-button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
             <p-button (click)="variationToggle()">{{variationToggleText}}</p-button>&nbsp;
+            <p-button (click)="setupPosition()">Setup Position</p-button>&nbsp;
             <p-button (click)="load()" *ngIf="game.id === ''" tooltipPosition="top" pTooltip="Load Moves">Load Moves</p-button>&nbsp;
+
             <span *ngIf="database">
                 <p-button *ngIf="this.game.id !== ''" (click)="save()" tooltipPosition="top" pTooltip="Update Game">Update</p-button>
                 <p-button *ngIf="this.game.id === ''" (click)="save()" tooltipPosition="top" pTooltip="Save Game">Save</p-button>&nbsp;
                 <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">Database: {{database.ds.name}}</span>
             </span>
+
             <span *ngIf="!database">
                 <span style="float: right; padding-right: 40px; padding-top: 12px; color: olivedrab">No Database</span>
             </span>

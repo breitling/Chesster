@@ -38,7 +38,6 @@ export class UpdateBoxComponent implements OnChanges {
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        console.log('U:' + this.game.id);
     }
 
 //  CALLBACKS
